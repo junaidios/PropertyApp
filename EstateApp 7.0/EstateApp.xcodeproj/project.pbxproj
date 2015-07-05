@@ -63,7 +63,7 @@
 		6923591A1B47284F008BFB61 /* SettingControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingControlView.swift; sourceTree = "<group>"; };
 		6923591C1B47289F008BFB61 /* SettingControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingControlView.xib; sourceTree = "<group>"; };
 		6923591E1B472EDD008BFB61 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		692359201B473026008BFB61 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		692359201B473026008BFB61 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		692359221B473ABD008BFB61 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69832B131B1483CD00059CD1 /* EstateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EstateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		69832B171B1483CD00059CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -113,8 +113,6 @@
 		69832B0A1B1483CD00059CD1 = {
 			isa = PBXGroup;
 			children = (
-				692359201B473026008BFB61 /* Default-568h@2x.png */,
-				6923591E1B472EDD008BFB61 /* MapKit.framework */,
 				69832B151B1483CD00059CD1 /* EstateApp */,
 				69832B2B1B1483CD00059CD1 /* EstateAppTests */,
 				69832B141B1483CD00059CD1 /* Products */,
@@ -146,6 +144,8 @@
 		69832B161B1483CD00059CD1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				692359201B473026008BFB61 /* Default-568h@2x.png */,
+				6923591E1B472EDD008BFB61 /* MapKit.framework */,
 				69832B171B1483CD00059CD1 /* Info.plist */,
 			);
 			name = "Supporting Files";
