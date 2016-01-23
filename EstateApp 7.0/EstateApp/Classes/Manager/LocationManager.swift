@@ -2,7 +2,7 @@
 //  LocationManager.swift
 //  MayDay
 //
-//  Created by OBAID on 17/11/2014.
+//  Created by Junaid on 17/11/2014.
 //  Copyright (c) 2014 Coeus Solutions GmbH. All rights reserved.
 //
 
@@ -70,41 +70,36 @@ class LocationManager : CLLocationManager, CLLocationManagerDelegate {
         return output
     }
     
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
-//        self.stopUpdatingLocation()
-        if ((error) != nil) {
-//            completionBlock(error: error, data: nil)
-        }
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+
+        
     }
     
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        if ((locations) != nil) {
+        
+        if(locations.count > 0)
+        {
             
-            if(locations.count > 0)
+            self.stopUpdatingLocation()
+            self.delegate = nil
+            
+            let locationArray = locations as NSArray
+            let locationObj = locationArray.firstObject as! CLLocation
+            let coord = locationObj.coordinate
+            
+            print(coord.latitude)
+            print(coord.longitude)
+            
+            _latitude = String(format: "%f", coord.latitude)
+            _longitude = String(format: "%f", coord.longitude)
+            
+            if gpsDataType == GPSDataType.GPSDataTypeAddress{
+                getAddressFromLocation(locationObj)
+            }
+            else
             {
-                
-                self.stopUpdatingLocation()
-                self.delegate = nil
-                
-                var locationArray = locations as NSArray
-                var locationObj = locationArray.firstObject as! CLLocation
-                var coord = locationObj.coordinate
-                
-                println(coord.latitude)
-                println(coord.longitude)
-                
-                _latitude = String(format: "%f", coord.latitude)
-                _longitude = String(format: "%f", coord.longitude)
-                
-                if gpsDataType == GPSDataType.GPSDataTypeAddress{
-                    getAddressFromLocation(locationObj)
-                }
-                else
-                {
-                    self.completionBlock(data: locationObj)
-                }
-                
+                self.completionBlock(data: locationObj)
             }
         }
     }
@@ -115,15 +110,20 @@ class LocationManager : CLLocationManager, CLLocationManagerDelegate {
             {(placemarks, error) in
                 if (error != nil)
                 {
-                    println("reverse geodcode fail: \(error.localizedDescription)")
+                    print("reverse geodcode fail: \(error!.localizedDescription)")
                 }
                 else
                 {
-                    for  placemark in placemarks {
-                        var pm : CLPlacemark = placemark as! CLPlacemark
-                        var addressLines = pm.addressDictionary["FormattedAddressLines"] as! NSArray
-                        var address : NSString = addressLines.componentsJoinedByString(", ");
-                        println(address)
+                    for  placemark in placemarks! {
+                        let pm : CLPlacemark = placemark
+                        let addressLines = pm.addressDictionary?["FormattedAddressLines"] as! NSArray
+                        var address = "";
+                        if addressLines.count>0 {
+                            address = addressLines.componentsJoinedByString(", ")
+                        } else {
+                            address = ""
+                        }
+                        
                         self.completionBlock(data: address)
                     }
                 }

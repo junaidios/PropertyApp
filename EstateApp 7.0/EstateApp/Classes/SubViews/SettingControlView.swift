@@ -11,6 +11,7 @@ import UIKit
 class SettingControlView: UIView
 {
     
+    
     @IBOutlet weak var lblRooms: UILabel!
     @IBOutlet weak var lblBaths: UILabel!
     @IBOutlet weak var lblPrice: UILabel!
@@ -38,7 +39,7 @@ class SettingControlView: UIView
 //        {
             lblPrice.text = String(minRange) + " - " + String(maxRange) ;
 //        }
-//        println("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
+//        print("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
     }
 
     
@@ -59,7 +60,7 @@ class SettingControlView: UIView
     
     func updateLocationText(address:String) {
     
-        println(address);
+        print(address);
         
         txtFieldLocation.text = address;
     }
@@ -78,6 +79,8 @@ class SettingControlView: UIView
         
         LocationManager.sharedInstance.getUserCurrentLocation(GPSDataType.GPSDataTypeAddress, completion: { (data) -> () in
 
+            self.txtFieldLocation.text = data as? String;
+            
             self.updateLocationText(data as! String);
         })
     }

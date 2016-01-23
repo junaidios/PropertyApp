@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import Alamofire
 
 typealias successCall = (data: AnyObject?) -> Void
-typealias failureCall = (error: NSError?)   -> Void
+typealias failureCall = (error: NSError?)  -> Void
 
 //if DEBUG
-var baseURLString:String = "http://www.ilocal.com/"
+var baseURLString:String = "http://bahriaestate.com/Estate/"
 
 class NetworkManager: NSObject {
    
@@ -23,15 +24,15 @@ class NetworkManager: NSObject {
     
     class func handleRequestResponse(json:AnyObject?, error:NSError!, success:successCall, failure:failureCall){
     
-        println("S-E-R-V-E-R  C-A-L-L  C-O-M-P-L-E-T-E-D")
+        print("S-E-R-V-E-R  C-A-L-L  C-O-M-P-L-E-T-E-D")
         
         if (error == nil)
         {
             var data:Dictionary = json as! Dictionary<String,AnyObject>!
             
-            println("Request Response: \(data)")
+            print("Request Response: \(data)")
             
-            let isSuccess = data["success"] as! Bool
+            let isSuccess = data["status"] as! Bool
             
             if (isSuccess == true){
                 
@@ -44,7 +45,7 @@ class NetworkManager: NSObject {
         }
         else {
             
-            println("Request Error: \(error.localizedDescription)")
+            print("Request Error: \(error.localizedDescription)")
 
             failure(error: error);
         }
@@ -53,57 +54,72 @@ class NetworkManager: NSObject {
     class func postWithURI( uri:String, params:Dictionary<String,AnyObject>,
         success:successCall, failure:failureCall)
     {
-        println("Request URL: " + baseURLString + uri)
-        println("Request Params: \(params)")
-        
+        print("Request URL: " + baseURLString + uri)
+        print("Request Params: \(params)")
         
         let urlPath: String = baseURLString + uri
         
-        var url: NSURL = NSURL(string: urlPath)!
-        
-        var request: NSMutableURLRequest = NSMutableURLRequest(URL: url)
+        Alamofire.request(.POST, urlPath, parameters: params)
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
 
-        request.HTTPMethod = "POST"
-        
-        let queue:NSOperationQueue = NSOperationQueue()
-        
-        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
-            
-            var err: NSError
-            
-            var jsonResult: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
-            
-            println("AsSynchronous\(jsonResult)")
-        })
-//        Alamofire.request(.POST, baseURLString + uri, parameters: params)
-//            .responseJSON { (request, response, json, errorRequest) in
-        
-//                self.handleRequestResponse(json, error: errorRequest, success: success, failure: failure);
-//        }
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    self.handleRequestResponse(JSON, error: nil, success: success, failure: failure);
+
+                }
+        }
     }
     
     class func getWithURI( uri:String, success:successCall, failure:failureCall)
     {
-        println("\n\n\nRequest URL: " + baseURLString + uri)
-        
-//        Alamofire.request(.GET, baseURLString + uri)
-//            .responseJSON { (request, response, json, errorRequest) in
-        
-//                self.handleRequestResponse(json, error: errorRequest, success: success, failure: failure);
-//        }
+        print("\n\n\nRequest URL: " + baseURLString + uri)
+
+        let urlPath: String = baseURLString + uri
+
+        Alamofire.request(.GET, urlPath, parameters:[:])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    self.handleRequestResponse(JSON, error: nil, success: success, failure: failure);
+                    
+                }
+
+        }
     }
     
     class func putWithURI( uri:String, params:Dictionary<String,AnyObject>,
         success:successCall, failure:failureCall)
     {
-        println("\n\n\nRequest URL: " + baseURLString + uri)
-        println("Request Params: \(params)")
+        print("\n\n\nRequest URL: " + baseURLString + uri)
+        print("Request Params: \(params)")
         
-//        Alamofire.request(.PUT, baseURLString + uri, parameters: params)
-//            .responseJSON { (request, response, json, errorRequest) in
-        
-//                self.handleRequestResponse(json, error: errorRequest, success: success, failure: failure);
-//        }
+        Alamofire.request(.PUT, baseURLString + uri, parameters: params)
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    self.handleRequestResponse(JSON, error: nil, success: success, failure: failure);
+                    
+                }
+        }
     }
     
 }

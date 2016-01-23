@@ -39,12 +39,21 @@ class MapViewController: BaseViewController {
             self.constraintTopSeachView.constant = 0;
         }
         
-        UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
-
+//
+//        UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+//            
+//            self.settingContainer.layoutIfNeeded()
+//            
+//            }) { (completed) -> Void in
+//                
+//        };
+        
+        UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 20.0, options:  UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            
             self.settingContainer.layoutIfNeeded()
             
-        }) { (completed) -> Void in
-            
+            }) { (completed) -> Void in
+                
         };
         
         settingsView.isOpen = !settingsView.isOpen;

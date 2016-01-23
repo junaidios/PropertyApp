@@ -17,17 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         
-        UserService.loadUserProfile("yasir@realstrategic.co", password: "Yas@strategic", success: { (data) -> () in
-            
-            
-            UIAlertView(title: "Test App", message: "Success", delegate: nil, cancelButtonTitle: "Cancel").show()
-
-            
-        }) { (error) -> () in
-            
-            UIAlertView(title: "Test App", message: error?.localizedDescription, delegate: nil, cancelButtonTitle: "Cancel").show()
-            
-        };
+//        UserService.loadUserProfile("yasir@realstrategic.co", password: "Yas@strategic", success: { (data) -> () in
+//            
+//            
+//            UIAlertView(title: "Test App", message: "Success", delegate: nil, cancelButtonTitle: "Cancel").show()
+//
+//            
+//        }) { (error) -> () in
+//            
+//            UIAlertView(title: "Test App", message: error?.localizedDescription, delegate: nil, cancelButtonTitle: "Cancel").show()
+//            
+//        };
         
         
         
