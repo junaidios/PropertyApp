@@ -11,7 +11,7 @@ import QuartzCore
 
 class RangeSlider: UIControl {
 
-    var minimumValue: Double = 0.0{
+    var minimumValue: Double = 20000.0{
         
         didSet{
             
@@ -20,7 +20,7 @@ class RangeSlider: UIControl {
         
     }
     
-    var maximumValue: Double = 1.0{
+    var maximumValue: Double = 8000000.0{
         
         didSet{
             
@@ -29,7 +29,7 @@ class RangeSlider: UIControl {
         
     }
     
-    var lowerValue: Double = 0.2 {
+    var lowerValue: Double = 20000 {
         
         didSet{
             
@@ -38,7 +38,7 @@ class RangeSlider: UIControl {
         
     }
     
-    var upperValue: Double = 0.8 {
+    var upperValue: Double = 8000000.0 {
         
         didSet{
             
@@ -63,7 +63,7 @@ class RangeSlider: UIControl {
         }
         
     }
-    var trackHeighlightTintColor: UIColor = UIColor(red: 0.0, green: 0.45, blue: 0.94, alpha: 1.0) {
+    var trackHeighlightTintColor: UIColor = UIColor(hex: "#52B1E1") {
         
         didSet{
             
@@ -148,7 +148,7 @@ class RangeSlider: UIControl {
     
     func positionForValue(value: Double) ->Double{
         
-        let widthDouble = Double(thumbWidth)
+//        let widthDouble = Double(thumbWidth)
         
         return Double(bounds.width - thumbWidth) * (value - minimumValue)/(maximumValue - minimumValue) + Double(thumbWidth/2.0)
         

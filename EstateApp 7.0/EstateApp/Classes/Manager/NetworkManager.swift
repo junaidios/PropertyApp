@@ -7,12 +7,14 @@
 //
 
 import UIKit
-import Alamofire
 
 typealias successCall = (data: AnyObject?) -> Void
 typealias failureCall = (error: NSError?)  -> Void
 
 //if DEBUG
+
+//var baseURLString:String = "http://localhost/Estate/"
+
 var baseURLString:String = "http://bahriaestate.com/Estate/"
 
 class NetworkManager: NSObject {
@@ -59,19 +61,27 @@ class NetworkManager: NSObject {
         
         let urlPath: String = baseURLString + uri
         
-        Alamofire.request(.POST, urlPath, parameters: params)
+        request(.POST, urlPath, parameters: params)
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
                 print(response.data)     // server data
                 print(response.result)   // result of response serialization
                 
-
-                if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
+                switch response.result {
                     
-                    self.handleRequestResponse(JSON, error: nil, success: success, failure: failure);
-
+                case .Success:
+                    
+                    if let JSON = response.result.value {
+                        
+                        print("JSON: \(JSON)")
+                        
+                        self.handleRequestResponse(JSON, error: nil, success: success, failure: failure);
+                    }
+                    
+                case .Failure(let error):
+                    
+                    failure(error: error);
                 }
         }
     }
@@ -82,7 +92,7 @@ class NetworkManager: NSObject {
 
         let urlPath: String = baseURLString + uri
 
-        Alamofire.request(.GET, urlPath, parameters:[:])
+        request(.GET, urlPath, parameters:[:])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -93,9 +103,7 @@ class NetworkManager: NSObject {
                     print("JSON: \(JSON)")
                     
                     self.handleRequestResponse(JSON, error: nil, success: success, failure: failure);
-                    
                 }
-
         }
     }
     
@@ -105,19 +113,17 @@ class NetworkManager: NSObject {
         print("\n\n\nRequest URL: " + baseURLString + uri)
         print("Request Params: \(params)")
         
-        Alamofire.request(.PUT, baseURLString + uri, parameters: params)
+        request(.PUT, baseURLString + uri, parameters: params)
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
                 print(response.data)     // server data
                 print(response.result)   // result of response serialization
                 
-
                 if let JSON = response.result.value {
                     print("JSON: \(JSON)")
                     
                     self.handleRequestResponse(JSON, error: nil, success: success, failure: failure);
-                    
                 }
         }
     }

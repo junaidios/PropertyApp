@@ -7,56 +7,17 @@
 //
 
 import UIKit
+import MapKit
 
 class MapViewController: BaseViewController {
 
-    var settingsView = SettingControlView.loadWithNib() as! SettingControlView;
-    @IBOutlet weak var constraintTopSeachView: NSLayoutConstraint!
-    @IBOutlet weak var settingContainer: UIView!
+
+    @IBOutlet weak var mapView: JSMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.addSettingControlView();
-    }
-    
-    func addSettingControlView()
-    {
-        self.constraintTopSeachView.constant = -320 + (20+20+42);
-
-        self.settingContainer .addSubview(settingsView)
-        settingsView.btnSearch.addTarget(self, action: "btnSeachPressed", forControlEvents: UIControlEvents.TouchUpInside)
-    }
-    
-    func btnSeachPressed(){
-        
-        if settingsView.isOpen
-        {
-            self.constraintTopSeachView.constant = -320 + (20+20+42);
-        }
-        else
-        {
-            self.constraintTopSeachView.constant = 0;
-        }
-        
-//
-//        UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
-//            
-//            self.settingContainer.layoutIfNeeded()
-//            
-//            }) { (completed) -> Void in
-//                
-//        };
-        
-        UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 20.0, options:  UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
-            
-            self.settingContainer.layoutIfNeeded()
-            
-            }) { (completed) -> Void in
-                
-        };
-        
-        settingsView.isOpen = !settingsView.isOpen;
+        self.setNavigationBarItem()
     }
 
     override func didReceiveMemoryWarning() {
@@ -64,7 +25,49 @@ class MapViewController: BaseViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated);
+        
+        reloadData();
+    }
 
+    @IBAction func btnReloadedPressed(sender: AnyObject) {
+        
+        reloadData();
+    }
+    
+    
+    func reloadData() {
+    
+        LocationManager.sharedInstance.getUserCurrentLocation(GPSDataType.GPSDataTypeLatLong) { (data) -> () in
+            
+            let location = data as! CLLocation;
+            let user_lat = String(location.coordinate.latitude.roundToPlaces(6));
+            let user_lng = String(location.coordinate.longitude.roundToPlaces(6));
+            let lat = String(self.mapView.centerCoordinate.latitude.roundToPlaces(6));
+            let lng = String(self.mapView.centerCoordinate.longitude.roundToPlaces(6));
+            let radius = String(self.mapView.getRadius());
+            
+            self.mapView.setCenterCoordinate(location.coordinate, animated: true);
+            
+            EstateService.listOfPropertiesForMaps(lat, longitude: lng, ulatitude: user_lat, ulongitude: user_lng, radius: radius, success: { (propertyList) -> Void in
+                
+                let properties = propertyList as! [Property];
+                
+                self.mapView.addNewPinsFromList(properties);
+                
+                self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+                
+                },
+                failure: { (error) -> Void in
+                    
+                    JSAlertView.show((error?.localizedDescription)!);
+            })
+        };
+    }
+    
+    
+    
     /*
     // MARK: - Navigation
 

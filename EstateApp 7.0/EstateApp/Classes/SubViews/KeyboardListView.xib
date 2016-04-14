@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="5UJ-OG-DJZ" customClass="KeyboardListView" customModule="EstateApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lyr-QV-b6L">
+                    <rect key="frame" x="0.0" y="41" width="320" height="150"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="150" id="dtV-qu-f1B"/>
+                    </constraints>
+                    <connections>
+                        <outlet property="dataSource" destination="5UJ-OG-DJZ" id="Sjf-Xi-xwN"/>
+                        <outlet property="delegate" destination="5UJ-OG-DJZ" id="R4f-Tg-kG8"/>
+                    </connections>
+                </pickerView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DTv-Zy-MLx">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="33"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XZi-4h-UpT">
+                            <rect key="frame" x="259.5" y="0.0" width="60" height="33"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="60" id="Kn7-qM-A6I"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
+                            <state key="normal" title="Hide">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="btnHidePressed:" destination="5UJ-OG-DJZ" eventType="touchUpInside" id="ePG-ub-jRC"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose City:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eHp-5J-zVc">
+                            <rect key="frame" x="8" y="0.0" width="252" height="33"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="XZi-4h-UpT" firstAttribute="top" secondItem="DTv-Zy-MLx" secondAttribute="top" id="5M5-eN-zMk"/>
+                        <constraint firstAttribute="trailing" secondItem="XZi-4h-UpT" secondAttribute="trailing" id="Kaf-Ug-XQX"/>
+                        <constraint firstAttribute="bottom" secondItem="eHp-5J-zVc" secondAttribute="bottom" id="LNF-9y-Lby"/>
+                        <constraint firstItem="eHp-5J-zVc" firstAttribute="top" secondItem="DTv-Zy-MLx" secondAttribute="top" id="Qjf-0C-A41"/>
+                        <constraint firstAttribute="bottom" secondItem="XZi-4h-UpT" secondAttribute="bottom" id="ZNc-Fb-Dfq"/>
+                        <constraint firstItem="XZi-4h-UpT" firstAttribute="leading" secondItem="eHp-5J-zVc" secondAttribute="trailing" id="lnI-PW-JYO"/>
+                        <constraint firstAttribute="height" constant="33" id="tZV-jJ-Ngi"/>
+                        <constraint firstItem="eHp-5J-zVc" firstAttribute="leading" secondItem="DTv-Zy-MLx" secondAttribute="leading" constant="8" id="vwg-5H-w8t"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="Lyr-QV-b6L" secondAttribute="bottom" constant="25" id="8wM-57-7AG"/>
+                <constraint firstItem="Lyr-QV-b6L" firstAttribute="top" secondItem="DTv-Zy-MLx" secondAttribute="bottom" constant="8" id="d6j-Vi-pGA"/>
+                <constraint firstAttribute="trailing" secondItem="Lyr-QV-b6L" secondAttribute="trailing" id="eJb-z2-YKt"/>
+                <constraint firstAttribute="trailing" secondItem="DTv-Zy-MLx" secondAttribute="trailing" id="mTn-ul-p41"/>
+                <constraint firstItem="DTv-Zy-MLx" firstAttribute="leading" secondItem="5UJ-OG-DJZ" secondAttribute="leading" id="o0T-Ei-7PX"/>
+                <constraint firstItem="DTv-Zy-MLx" firstAttribute="top" secondItem="5UJ-OG-DJZ" secondAttribute="top" id="upz-Dv-TEt"/>
+                <constraint firstItem="Lyr-QV-b6L" firstAttribute="leading" secondItem="5UJ-OG-DJZ" secondAttribute="leading" id="z2S-ko-C8Y"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="pickerView" destination="Lyr-QV-b6L" id="UCN-k2-7Q6"/>
+            </connections>
+            <point key="canvasLocation" x="228" y="70"/>
+        </view>
+    </objects>
+</document>

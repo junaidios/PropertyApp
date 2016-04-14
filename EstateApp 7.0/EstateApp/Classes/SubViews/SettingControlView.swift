@@ -7,14 +7,22 @@
 //
 
 import UIKit
+import MapKit
 
-class SettingControlView: UIView
+
+
+
+class SettingControlView: BaseViewController, UITextFieldDelegate
 {
     
+    
+    @IBOutlet weak var lblLatitude: UILabel!
+    @IBOutlet weak var lblLongitude: UILabel!
     
     @IBOutlet weak var lblRooms: UILabel!
     @IBOutlet weak var lblBaths: UILabel!
     @IBOutlet weak var lblPrice: UILabel!
+    @IBOutlet weak var lblRadius: UILabel!
     
     @IBOutlet weak var txtFieldLocation: UITextField!
 
@@ -23,46 +31,62 @@ class SettingControlView: UIView
     @IBOutlet weak var sliderRooms: UISlider!
     @IBOutlet weak var sliderBaths: UISlider!
     @IBOutlet weak var sliderPrice: UISlider!
+    @IBOutlet weak var sliderRadius: UISlider!
     
+    @IBOutlet weak var switchBtnLocation: UISwitch!
     @IBOutlet weak var priceSliderContainer: UIView!
     
+
     let priceRangeSlider = RangeSlider(frame: CGRectZero)
     
     
     func priceRangeSliderValueChanged(rangeSlider: RangeSlider){
         
         
-        let minRange = Int(rangeSlider.lowerValue*20) * 500;
-        let maxRange = Int(rangeSlider.upperValue*20) * 500;
+        let minRange = Double(rangeSlider.lowerValue/1000) * 1000;
+        let maxRange = Double(rangeSlider.upperValue/1000) * 1000;
         
-//        if minRange % 10 == 0 && maxRange % 10 == 0
-//        {
-            lblPrice.text = String(minRange) + " - " + String(maxRange) ;
-//        }
-//        print("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
+        lblPrice.text = minRange.getCurrencyFormat() + " - " + maxRange.getCurrencyFormat();
+        
+        print("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
     }
 
     
     var isOpen = false
 
     @IBAction func btnToSwitchOnOffCustomLocation(switchBtn: UISwitch) {
-    
-       if switchBtn.on
-       {
+        
+        if switchBtn.on
+        {
             txtFieldLocation.enabled = true;
         }
         else
-       {
+        {
             txtFieldLocation.enabled = false;
+            self.loadUserLocation();
         }
-        
     }
     
-    func updateLocationText(address:String) {
     
-        print(address);
+    @IBAction func btnSavePressed(sender: AnyObject) {
+     
+        let setting = Settings.loadSettings();
         
-        txtFieldLocation.text = address;
+        setting.latitude = lblLatitude.text!;
+        setting.longitude = lblLongitude.text!;
+        setting.rooms = lblRooms.text!;
+        setting.baths = lblBaths.text!;
+        setting.radius = String(Int(sliderRadius.value));
+        setting.minPrice =  String(Int(priceRangeSlider.lowerValue));
+        setting.maxPrice =  String(Int(priceRangeSlider.upperValue));
+        setting.locationName = txtFieldLocation.text!;
+        setting.isCustomLocation = switchBtnLocation.on;
+        
+        setting.saveSettings();
+        
+        self.toggleLeft();
+         
+        
     }
 
     func setupPriceRangeSlider()
@@ -70,19 +94,28 @@ class SettingControlView: UIView
         priceSliderContainer.addSubview(self.priceRangeSlider)
 
         self.priceRangeSlider.addTarget(self, action: "priceRangeSliderValueChanged:", forControlEvents: .ValueChanged)
-        self.priceRangeSlider.trackHeighlightTintColor = UIColor(red: 232.0/255.0, green: 158.0/255.0, blue: 52.0/255.0, alpha: 1.0);
+        self.priceRangeSlider.trackHeighlightTintColor = UIColor(hex: "#52B1E1");
         self.priceRangeSlider.curvaceousness = 1.0
         self.priceRangeSlider.frame = priceSliderContainer.bounds
     }
     
     func loadUserLocation(){
         
-        LocationManager.sharedInstance.getUserCurrentLocation(GPSDataType.GPSDataTypeAddress, completion: { (data) -> () in
-
-            self.txtFieldLocation.text = data as? String;
-            
-            self.updateLocationText(data as! String);
-        })
+        if (switchBtnLocation.on == false)
+        {
+            LocationManager.sharedInstance.getUserCurrentLocation(GPSDataType.GPSDataTypeLatLong, completion: { (data) -> () in
+                
+                let location = data as! CLLocation;
+                self.lblLatitude.text = String(location.coordinate.latitude.roundToPlaces(6));
+                self.lblLongitude.text = String(location.coordinate.longitude.roundToPlaces(6));
+                
+                LocationManager.sharedInstance.getAddressFromLocation(location, completion: { (data) -> () in
+                    
+                    self.txtFieldLocation.text = data as? String;
+                });
+                
+            })
+        }
     }
     
     @IBAction func sliderPriceValueChanged(slider: UISlider) {
@@ -94,25 +127,98 @@ class SettingControlView: UIView
     @IBAction func sliderRoomsValueChanged(slider: UISlider) {
         
         let value = Int(slider.value)
-        lblRooms.text = String(value);
-
+        if value == 0 {
+            lblRooms.text = "Any";
+        }
+        else {
+            lblRooms.text = String(value);
+        }
+    }
+    
+    @IBAction func sliderRadiusChangeValue(slider: UISlider) {
+        
+        let value = Int(slider.value)
+        lblRadius.text = String(value) + "km";
     }
     
     @IBAction func sliderBathValueChanged(slider: UISlider) {
         
         let value = Int(slider.value)
-        lblBaths.text = String(value);
+        if value == 0 {
+            lblBaths.text = "Any";
+        }
+        else {
+            lblBaths.text = String(value);
+        }
     }
     
-    static func loadWithNib() -> UIView
-    {
-        var settingView: SettingControlView;
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        settingView = NSBundle.mainBundle().loadNibNamed("SettingControlView", owner: nil, options: nil).first as! SettingControlView
+        self.loadUserLocation();
+        self.setupPriceRangeSlider();
+        self.txtFieldLocation.delegate = self;
+
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated);
         
-        settingView.loadUserLocation();
-        settingView.setupPriceRangeSlider();
-        return settingView;
+        let setting = Settings.loadSettings();
+        lblRooms.text = setting.rooms;
+        lblBaths.text = setting.baths;
+        lblRadius.text = setting.radius  + "km";
+        lblPrice.text = Double(setting.minPrice)!.getCurrencyFormat() + " - " + Double(setting.maxPrice)!.getCurrencyFormat();
         
+        if lblRooms.text == "Any"{
+            sliderRooms.value = 0
+        }
+        else{
+            sliderRooms.value = Float(lblRooms.text!)!;
+        }
+        
+        if lblBaths.text == "Any"{
+            sliderBaths.value = 0
+        }
+        else{
+            sliderBaths.value = Float(lblBaths.text!)!;
+        }
+        
+        sliderRadius.value = Float(setting.radius)!;
+
+        switchBtnLocation.on = setting.isCustomLocation;
+        
+        if switchBtnLocation.on {
+            lblLatitude.text = setting.latitude;
+            lblLongitude.text = setting.longitude;
+            txtFieldLocation.text = setting.locationName;
+            txtFieldLocation.enabled = true;
+        }
+        priceRangeSlider.lowerValue = Double(setting.minPrice)!;
+        priceRangeSlider.upperValue = Double(setting.maxPrice)!;
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+
+
+        textField.resignFirstResponder();
+        
+        LocationManager.sharedInstance.getLocationFromAddress(textField.text!) { (data) -> () in
+            
+            let location = data as! CLLocation;
+            self.lblLatitude.text = String(location.coordinate.latitude.roundToPlaces(6));
+            self.lblLongitude.text = String(location.coordinate.longitude.roundToPlaces(6));
+        }
+        
+        return true;
     }
 }

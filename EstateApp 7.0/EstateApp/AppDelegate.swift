@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
+
         
 //        UserService.loadUserProfile("yasir@realstrategic.co", password: "Yas@strategic", success: { (data) -> () in
 //            
@@ -30,9 +32,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        };
         
         
+//        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
+        let mainViewController = storyboard.instantiateViewControllerWithIdentifier("MapViewController") as! MapViewController
+        let leftViewController = storyboard.instantiateViewControllerWithIdentifier("SettingControlView") as! SettingControlView
         
+        let nvc: UINavigationController = UINavigationController(rootViewController: mainViewController)
         
+        UINavigationBar.appearance().tintColor = UIColor.whiteColor();
+        UINavigationBar.appearance().barTintColor = UIColor.blueThemeColor();
+        
+        let slideMenuController = ExSlideMenuController(mainViewController:nvc, leftMenuViewController: leftViewController)
+        slideMenuController.automaticallyAdjustsScrollViewInsets = true
+        self.window?.backgroundColor = UIColor(red: 236.0, green: 238.0, blue: 241.0, alpha: 1.0)
+        self.window?.rootViewController = slideMenuController
+        self.window?.makeKeyAndVisible()
+//
         
         // Override point for customization after application launch.
         return true

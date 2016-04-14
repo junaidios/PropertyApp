@@ -13,23 +13,58 @@ class NearByListController: BaseViewController , UITableViewDataSource, UITableV
     var properties = NSMutableArray();
     
     @IBOutlet weak var tblView: UITableView!
+    @IBOutlet weak var segmentCtrl: UISegmentedControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        EstateService.listOfProperties({ (propertyList) -> Void in
-            
-            self.properties.addObjectsFromArray(propertyList as! [AnyObject]);
-            self.tblView.reloadData();
-            
-        }) { (error) -> Void in
-            
-        };
+        
+        self.segmentCtrlValueChanged(segmentCtrl);
+        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    @IBAction func segmentCtrlValueChanged(sender: UISegmentedControl) {
+        
+        self.view.showLoading();
+        
+        self.properties.removeAllObjects();
+        
+        if (segmentCtrl.selectedSegmentIndex == 0)
+        {
+            EstateService.listOfProperties({ (propertyList) -> Void in
+                
+                self.view.hideLoading();
+                
+                self.properties.addObjectsFromArray(propertyList as! [AnyObject]);
+                self.tblView.reloadData();
+                
+                }) { (error) -> Void in
+                   
+                    self.view.hideLoading();
+
+            };
+        }
+        else if (segmentCtrl.selectedSegmentIndex == 1)
+        {
+            EstateService.searchListOfProperties({ (propertyList) -> Void in
+                
+                self.view.hideLoading();
+
+                self.properties.addObjectsFromArray(propertyList as! [AnyObject]);
+                self.tblView.reloadData();
+                
+                }) { (error) -> Void in
+                    
+                    self.view.hideLoading();
+
+            };
+        }
     }
     
     @IBAction func btnMapViewPressed(sender: AnyObject) {
@@ -47,10 +82,19 @@ class NearByListController: BaseViewController , UITableViewDataSource, UITableV
         
         let property = properties.objectAtIndex(indexPath.row) as! Property;
         
+        var distanceMain = "0";
+        
+        if let distance = property.distance {
+            
+            let distanceStr = distance as String;
+            let distanceINT = Int(Double(distanceStr)!);
+            distanceMain = String(distanceINT) + "km";
+        }
+        
         cell.lblTitle.text = property.titleMsg;
-        cell.lblSize.text = property.size;
-        cell.lblDistance.text = property.city;
-        cell.lblDemand.text = property.demand;
+        cell.lblSize.text = property.size! + " ft2";
+        cell.lblDistance.text = "Distance: " + distanceMain + ", City: " + property.city!;
+        cell.lblDemand.text = property.demand?.getCurrencyFormat();
         cell.imgView.setURL(NSURL(string: property.photo!), placeholderImage: UIImage(named: "imagePP"))
         
         return cell;
@@ -58,6 +102,21 @@ class NearByListController: BaseViewController , UITableViewDataSource, UITableV
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        self.performSegueWithIdentifier("detail", sender: nil);
+        let property = properties.objectAtIndex(indexPath.row) as! Property;
+
+        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        
+        self.performSegueWithIdentifier("detail", sender: property);
+    }
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "detail" {
+        
+            let destination = segue.destinationViewController as! DetailViewController;
+            destination.property = sender as! Property;
+        
+        }
     }
 }

@@ -13,6 +13,7 @@ class RangeSliderTrackLayer: CALayer {
     weak var rangeSlider: RangeSlider?
     
     override func drawInContext(ctx: CGContext) {
+     
         if let slider = rangeSlider {
             
             let cornerRadius = bounds.height * slider.curvaceousness / 2.0
@@ -31,8 +32,6 @@ class RangeSliderTrackLayer: CALayer {
             
             let rect = CGRectMake(lowerValuePosition, 0.0, upperValuePosition - lowerValuePosition, bounds.height)
             CGContextFillRect(ctx, rect)
-            
-            
         }
     }
     

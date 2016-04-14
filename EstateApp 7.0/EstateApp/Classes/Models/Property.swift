@@ -29,7 +29,9 @@ class Property : BaseEntity {
     var ownerNumber :String?
     var ownerAddress :String?
     var ownerEmail :String?
+    var distance :String?
     var photo :String?
+    var photos = NSMutableArray();
 
 //"propertyid": "1",
 //"title_msg": "test",
@@ -54,10 +56,39 @@ class Property : BaseEntity {
     
     func mapPropertyUsing(data: NSDictionary) -> Property{
         
+        let list : NSMutableArray = [
+            //                "Any Type",
+            //            "--------- Homes ---------",
+            "Houses",
+            "Flats",
+            "Upper Portions",
+            "Lower Portions",
+            "Farm Houses",
+            "Rooms",
+            "Penthouse",
+            //            "--------- Plots ---------",
+            "Residential Plots",
+            "Commercial Plots",
+            "Agricultural Land",
+            "Industrial Land",
+            "Plot Files",
+            "Plot Forms",
+            //            "--------- Commercial ---------",
+            "Offices",
+            "Shops",
+            "Warehouses",
+            "Factories",
+            "Buildings",
+            "Other"];
+
+        
         self.propertyId = data["propertyid"] as? String;
         self.titleMsg = data["title_msg"] as? String;
         self.size = data["size"] as? String;
-        self.type = data["type"] as? String;
+        
+        let typeId = Int((data["type"] as? String)!);
+        
+        self.type = list[typeId!] as? String;
         self.demand = data["demand"] as? String;
         self.condition = data["condition"] as? String;
         self.detail = data["detail"] as? String;
@@ -77,6 +108,11 @@ class Property : BaseEntity {
         
         if let subURL = arr?.firstObject as? String {
             self.photo = baseURLString.stringByAppendingString(subURL)
+        }
+        
+        for url in arr! {
+        
+            self.photos.addObject(baseURLString.stringByAppendingString(url as! String))
         }
         
         return self;

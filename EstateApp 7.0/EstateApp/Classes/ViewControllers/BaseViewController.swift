@@ -34,13 +34,17 @@ class BaseViewController: UIViewController {
     
     func showAlertMessage(message:String){
     
-        UIAlertView(title: "Test App!",
+        UIAlertView(title: "Property App!",
                     message: message,
                     delegate: nil,
                     cancelButtonTitle: "Cancel",
                     otherButtonTitles: "Okay")
                     .show();
         
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent;
     }
 
 }
