@@ -12,12 +12,27 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+//    func factorial(fact : Int) -> Int {
+//        
+//        if fact <= 1{
+//            return 1;
+//        }
+//        else {
+//        
+//            let fact = fact * factorial(fact-1);
+//        
+//            return fact;
+//        }
+//    }
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
 
+        
+//        print(factorial(5));
         
 //        UserService.loadUserProfile("yasir@realstrategic.co", password: "Yas@strategic", success: { (data) -> () in
 //            

@@ -69,6 +69,7 @@ class AddPropertyViewController: BaseViewController, UIImagePickerControllerDele
         self.presentViewController(alert, animated: true, completion: nil)
     }
     func openCamera(){
+        
         if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)){
             picker.sourceType = UIImagePickerControllerSourceType.Camera
             self.presentViewController(picker, animated: true, completion: nil)

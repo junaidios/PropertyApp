@@ -130,7 +130,6 @@
 		69832B2D1B1483CD00059CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69832B2E1B1483CD00059CD1 /* EstateAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstateAppTests.swift; sourceTree = "<group>"; };
 		6993AFE31C910E3600668039 /* ExSlideMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExSlideMenuController.swift; sourceTree = "<group>"; };
-		6993AFE51C910E4200668039 /* SlideMenuControllerSwift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideMenuControllerSwift.h; sourceTree = "<group>"; };
 		6993AFE61C910E4200668039 /* SlideMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlideMenuController.swift; sourceTree = "<group>"; };
 		6993AFE81C91124100668039 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		6993AFE91C91124100668039 /* DataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTableViewCell.swift; sourceTree = "<group>"; };
@@ -283,7 +282,6 @@
 			children = (
 				69B1996C1CBE3F0600192B82 /* Alamofire */,
 				69B1997F1CBE3F0600192B82 /* SwiftSpinner */,
-				6993AFE51C910E4200668039 /* SlideMenuControllerSwift.h */,
 				6993AFE61C910E4200668039 /* SlideMenuController.swift */,
 				6954D6851C8C98310060EACA /* RangeSlider.swift */,
 				6954D6861C8C98310060EACA /* JSMapView.swift */,
@@ -677,7 +675,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "waqar.estate.app.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0db3624b-647b-48d8-a2e4-c89d6ca8bcc2";
+				PROVISIONING_PROFILE = "8eb257f4-18b5-4368-8a6a-716c3dc61907";
 			};
 			name = Debug;
 		};
@@ -692,7 +690,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "waqar.estate.app.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0db3624b-647b-48d8-a2e4-c89d6ca8bcc2";
+				PROVISIONING_PROFILE = "8eb257f4-18b5-4368-8a6a-716c3dc61907";
 			};
 			name = Release;
 		};
