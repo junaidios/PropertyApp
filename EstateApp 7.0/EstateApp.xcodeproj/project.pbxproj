@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6909A7301D00180E00F65317 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6909A72F1D00180E00F65317 /* Location.swift */; };
+		6909A7321D003C3A00F65317 /* AutoCompleteTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6909A7311D003C3A00F65317 /* AutoCompleteTextField.swift */; };
 		691A81411BCC244B003AAA53 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691A81401BCC244B003AAA53 /* Property.swift */; };
 		691A81441BCC2A7B003AAA53 /* PropertyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691A81431BCC2A7B003AAA53 /* PropertyCell.swift */; };
 		691D6A5E1CA29D9600FC43E2 /* KeyboardListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 691D6A5C1CA29D9600FC43E2 /* KeyboardListView.xib */; };
@@ -99,6 +101,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6909A72F1D00180E00F65317 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		6909A7311D003C3A00F65317 /* AutoCompleteTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteTextField.swift; sourceTree = "<group>"; };
 		691A81401BCC244B003AAA53 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		691A81431BCC2A7B003AAA53 /* PropertyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyCell.swift; sourceTree = "<group>"; };
 		691D6A5C1CA29D9600FC43E2 /* KeyboardListView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KeyboardListView.xib; sourceTree = "<group>"; };
@@ -296,6 +300,7 @@
 				6954D68E1C8C98310060EACA /* RangeSliderThumbLayer.swift */,
 				6954D68F1C8C98310060EACA /* RangeSliderTrackLayer.swift */,
 				691D6A601CA29E4800FC43E2 /* JSTextField.swift */,
+				6909A7311D003C3A00F65317 /* AutoCompleteTextField.swift */,
 			);
 			path = ExternalLibs;
 			sourceTree = "<group>";
@@ -306,6 +311,7 @@
 				6993D0701B36F35A0031A05F /* BaseEntity.swift */,
 				6993D0781B36F3F60031A05F /* User.swift */,
 				691A81401BCC244B003AAA53 /* Property.swift */,
+				6909A72F1D00180E00F65317 /* Location.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -514,6 +520,7 @@
 				69AF41071CA3016F00949790 /* SpringAnimation.swift in Sources */,
 				692359231B473ABD008BFB61 /* LocationManager.swift in Sources */,
 				691A81441BCC2A7B003AAA53 /* PropertyCell.swift in Sources */,
+				6909A7301D00180E00F65317 /* Location.swift in Sources */,
 				6954D6991C8C98310060EACA /* RangeSliderThumbLayer.swift in Sources */,
 				6954D69A1C8C98310060EACA /* RangeSliderTrackLayer.swift in Sources */,
 				69A99F851C83DB8400C2A66E /* UIView.swift in Sources */,
@@ -539,6 +546,7 @@
 				69B199921CBE3F0600192B82 /* Validation.swift in Sources */,
 				69A99F841C83DB8400C2A66E /* UIImage.swift in Sources */,
 				69A99F861C83DB8400C2A66E /* UIColor.swift in Sources */,
+				6909A7321D003C3A00F65317 /* AutoCompleteTextField.swift in Sources */,
 				69A99F801C83DB8400C2A66E /* String.swift in Sources */,
 				6954D6941C8C98310060EACA /* OverlayButton.swift in Sources */,
 				69B199891CBE3F0600192B82 /* ParameterEncoding.swift in Sources */,

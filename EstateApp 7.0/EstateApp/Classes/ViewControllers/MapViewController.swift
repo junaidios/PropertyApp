@@ -18,6 +18,12 @@ class MapViewController: BaseViewController {
         super.viewDidLoad()
         
         self.setNavigationBarItem()
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(reloadData),
+            name: "mapViewPinReloaded",
+            object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,36 +44,31 @@ class MapViewController: BaseViewController {
     
     
     func reloadData() {
+      
+        let setting = Settings.loadSettings();
+        
+        let user_lat = setting.latitude;
+        let user_lng = setting.longitude;
+        let radius = setting.radius;
+        
+        
+        EstateService.listOfPropertiesForMaps(user_lat, longitude: user_lng, ulatitude: user_lat, ulongitude: user_lng, radius: radius, success: { (propertyList) -> Void in
+            
+            let properties = propertyList as! [Property];
+            
+            self.mapView.addNewPinsFromList(properties);
+            
+            self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+            
+            },
+              
+        failure: { (error) -> Void in
+                                                
+                                                JSAlertView.show((error?.localizedDescription)!);
+        })
+        
     
-        LocationManager.sharedInstance.getUserCurrentLocation(GPSDataType.GPSDataTypeLatLong) { (data) -> () in
-            
-            let location = data as! CLLocation;
-            let user_lat = String(location.coordinate.latitude.roundToPlaces(6));
-            let user_lng = String(location.coordinate.longitude.roundToPlaces(6));
-            let lat = String(self.mapView.centerCoordinate.latitude.roundToPlaces(6));
-            let lng = String(self.mapView.centerCoordinate.longitude.roundToPlaces(6));
-            let radius = String(self.mapView.getRadius());
-            
-            self.mapView.setCenterCoordinate(location.coordinate, animated: true);
-            
-            EstateService.listOfPropertiesForMaps(lat, longitude: lng, ulatitude: user_lat, ulongitude: user_lng, radius: radius, success: { (propertyList) -> Void in
-                
-                let properties = propertyList as! [Property];
-                
-                self.mapView.addNewPinsFromList(properties);
-                
-                self.mapView.showAnnotations(self.mapView.annotations, animated: true);
-                
-                },
-                failure: { (error) -> Void in
-                    
-                    JSAlertView.show((error?.localizedDescription)!);
-            })
-        };
     }
-    
-    
-    
     /*
     // MARK: - Navigation
 

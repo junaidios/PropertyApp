@@ -74,7 +74,8 @@ class JSMapView: MKMapView, MKMapViewDelegate{
                     
                         if let citytemp = addressDictionary!["FormattedAddressLines"] {
                             
-                            city = citytemp[0] as! String;
+                            let citytempArr = citytemp as! NSArray;
+                            city = citytempArr[0] as! String;
                         }                        
                     }
                     

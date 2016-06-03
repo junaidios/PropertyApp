@@ -12,7 +12,7 @@ import MapKit
 
 
 
-class SettingControlView: BaseViewController, UITextFieldDelegate
+class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
 {
     
     
@@ -24,7 +24,7 @@ class SettingControlView: BaseViewController, UITextFieldDelegate
     @IBOutlet weak var lblPrice: UILabel!
     @IBOutlet weak var lblRadius: UILabel!
     
-    @IBOutlet weak var txtFieldLocation: UITextField!
+    @IBOutlet weak var txtFieldLocation: AutoCompleteTextField!
 
     @IBOutlet weak var btnSearch: UIButton!
     
@@ -42,7 +42,6 @@ class SettingControlView: BaseViewController, UITextFieldDelegate
     
     func priceRangeSliderValueChanged(rangeSlider: RangeSlider){
         
-        
         let minRange = Double(rangeSlider.lowerValue/1000) * 1000;
         let maxRange = Double(rangeSlider.upperValue/1000) * 1000;
         
@@ -50,7 +49,6 @@ class SettingControlView: BaseViewController, UITextFieldDelegate
         
         print("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
     }
-
     
     var isOpen = false
 
@@ -84,8 +82,10 @@ class SettingControlView: BaseViewController, UITextFieldDelegate
         
         setting.saveSettings();
         
+        NSNotificationCenter.defaultCenter().postNotificationName("mapViewPinReloaded", object: nil)
+
         self.toggleLeft();
-         
+    
         
     }
 
@@ -157,7 +157,7 @@ class SettingControlView: BaseViewController, UITextFieldDelegate
         
         self.loadUserLocation();
         self.setupPriceRangeSlider();
-        self.txtFieldLocation.delegate = self;
+        self.txtFieldLocation.mDelegate = self;
 
     }
     
@@ -194,6 +194,9 @@ class SettingControlView: BaseViewController, UITextFieldDelegate
             txtFieldLocation.text = setting.locationName;
             txtFieldLocation.enabled = true;
         }
+        else {
+            self.loadUserLocation();
+        }
         priceRangeSlider.lowerValue = Double(setting.minPrice)!;
         priceRangeSlider.upperValue = Double(setting.maxPrice)!;
         
@@ -207,18 +210,11 @@ class SettingControlView: BaseViewController, UITextFieldDelegate
         super.viewDidLayoutSubviews()
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-
-
-        textField.resignFirstResponder();
+    func textFieldDidEndEditingWithLocation(location: Location) {
         
-        LocationManager.sharedInstance.getLocationFromAddress(textField.text!) { (data) -> () in
-            
-            let location = data as! CLLocation;
-            self.lblLatitude.text = String(location.coordinate.latitude.roundToPlaces(6));
-            self.lblLongitude.text = String(location.coordinate.longitude.roundToPlaces(6));
-        }
+        self.lblLatitude.text =  location.latitude;
+        self.lblLongitude.text =  location.longitude;
         
-        return true;
+
     }
 }
