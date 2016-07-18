@@ -108,6 +108,7 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
     }
     
     func provideSuggestions(){
+        
         if (tableViewController) != nil {
             tableViewController!.tableView.reloadData()
            // self.delegate = self

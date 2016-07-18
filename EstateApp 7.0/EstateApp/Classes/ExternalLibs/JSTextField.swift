@@ -1,14 +1,15 @@
 //
 //  JSTextField.swift
-//  EstateApp
+//  Erinnerungsorte
 //
-//  Created by JayD on 23/03/2016.
-//  Copyright © 2016 Waqar Ahsan. All rights reserved.
+//  Created by JayD on 06/06/2016.
+//  Copyright © 2016 Administrator. All rights reserved.
 //
+
 
 import UIKit
 
-class JSTextField: UITextField {
+class JSTextField: UITextField, UITextFieldDelegate {
 
     /*
     // Only override drawRect: if you perform custom drawing.
@@ -22,52 +23,23 @@ class JSTextField: UITextField {
         super.init(coder: aDecoder);
         
         
-        if self.tag == 100 {
+        if self.tag == 101 { // Types
             
-            let list : NSMutableArray = [
-//                "Any Type",
-//            "--------- Homes ---------",
-            "Houses",
-            "Flats",
-            "Upper Portions",
-            "Lower Portions",
-            "Farm Houses",
-            "Rooms",
-            "Penthouse",
-//            "--------- Plots ---------",
-            "Residential Plots",
-            "Commercial Plots",
-            "Agricultural Land",
-            "Industrial Land",
-            "Plot Files",
-            "Plot Forms",
-//            "--------- Commercial ---------",
-            "Offices",
-            "Shops",
-            "Warehouses",
-            "Factories",
-            "Buildings",
-            "Other"];
+ 
+            let list = NSMutableArray(array: EODatabase.instance.getTypes());
             
-            self.inputView = KeyboardListView.loadWithNib(self, options: list);
+            self.inputView = KeyboardListView.loadWithNib(self, title:"Select Category:", options: list);
             
         }
-        if self.tag == 101 { // Condition
+        if self.tag == 102 { // Countries
             
-            self.inputView = KeyboardListView.loadWithNib(self, options: ["New", "Old", "Historical", "New Used"]);
+            let list = NSMutableArray(array: EODatabase.instance.getCountries());
+            
+            self.inputView = KeyboardListView.loadWithNib(self,  title:"Select Country:", options: list);
             
         }
-//        if self.tag == 102 { // Rooms
-//            
-//            self.inputView = KeyboardListView.loadWithNib(self, options: ["Any", "1", "2", "3", "4", "5", "6+", "Studio"]);
-//            
-//        }
-//        if self.tag == 103 {
-//            
-//            self.inputView = KeyboardListView.loadWithNib(self, options: ["Any", "1", "2", "3", "4", "4+"]);
-//            
-//        }
     }
+    
     
     
 }
