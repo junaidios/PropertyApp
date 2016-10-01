@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import MapKit
 class NearByListController: BaseViewController , UITableViewDataSource, UITableViewDelegate {
    
     var properties = NSMutableArray();
@@ -55,14 +55,21 @@ class NearByListController: BaseViewController , UITableViewDataSource, UITableV
             EstateService.searchListOfProperties({ (propertyList) -> Void in
                 
                 self.view.hideLoading();
-
-                self.properties.addObjectsFromArray(propertyList as! [AnyObject]);
-                self.tblView.reloadData();
                 
-                }) { (error) -> Void in
+                
+                LocationService.getPropertyDurationsFromCurrentLocation(propertyList as! [Property], success: { (data) in
                     
-                    self.view.hideLoading();
-
+                    self.properties.addObjectsFromArray(propertyList as! [AnyObject]);
+                    self.tblView.reloadData();
+                    
+                    }, failure: { (error) in
+                        
+                })
+                
+            }) { (error) -> Void in
+                
+                self.view.hideLoading();
+                
             };
         }
     }
@@ -82,18 +89,22 @@ class NearByListController: BaseViewController , UITableViewDataSource, UITableV
         
         let property = properties.objectAtIndex(indexPath.row) as! Property;
         
-        var distanceMain = "0";
+        var title = "";
         
-        if let distance = property.distance {
-            
-            let distanceStr = distance as String;
-            let distanceINT = Int(Double(distanceStr)!);
-            distanceMain = String(distanceINT) + "km";
+        if property.distance.length > 0 {
+            title = property.distance;
         }
+        if title.length == 0 {
+            title = property.duration + "away";
+        }
+        else  {
+            title =  title + ", \(property.duration) away";
+        }
+
         
         cell.lblTitle.text = property.titleMsg;
         cell.lblSize.text = property.size! + " ft2";
-        cell.lblDistance.text = "Distance: " + distanceMain + ", City: " + property.city!;
+        cell.lblDistance.text = "Distance: " + title //+ ", City: " + property.city!;
         cell.lblDemand.text = property.demand?.getCurrencyFormat();
         cell.imgView.setURL(NSURL(string: property.photo!), placeholderImage: UIImage(named: "imagePP"))
         

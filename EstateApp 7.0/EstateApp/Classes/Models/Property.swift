@@ -29,7 +29,8 @@ class Property : BaseEntity {
     var ownerNumber :String?
     var ownerAddress :String?
     var ownerEmail :String?
-    var distance :String?
+    var distance :String = ""
+    var duration :String = ""
     var photo :String?
     var photos = NSMutableArray();
 

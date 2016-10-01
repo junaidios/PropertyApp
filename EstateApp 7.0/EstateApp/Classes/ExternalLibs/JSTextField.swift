@@ -26,16 +26,16 @@ class JSTextField: UITextField, UITextFieldDelegate {
         if self.tag == 101 { // Types
             
  
-            let list = NSMutableArray(array: EODatabase.instance.getTypes());
+//            let list = NSMutableArray(array: EODatabase.instance.getTypes());
             
-            self.inputView = KeyboardListView.loadWithNib(self, title:"Select Category:", options: list);
+//            self.inputView = KeyboardListView.loadWithNib(self, title:"Select Category:", options: list);
             
         }
         if self.tag == 102 { // Countries
             
-            let list = NSMutableArray(array: EODatabase.instance.getCountries());
+//            let list = NSMutableArray(array: EODatabase.instance.getCountries());
             
-            self.inputView = KeyboardListView.loadWithNib(self,  title:"Select Country:", options: list);
+//            self.inputView = KeyboardListView.loadWithNib(self,  title:"Select Country:", options: list);
             
         }
     }

@@ -27,6 +27,8 @@ class JSMapView: MKMapView, MKMapViewDelegate{
     }
     */
     
+    
+    
     var myRoute : MKRoute?;
     weak var delegated: JSMapViewDelegate?
 
@@ -35,9 +37,24 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         self.showsUserLocation = false;
         self.delegate = self;
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: "addCustomAnnotation:")
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(JSMapView.addCustomAnnotation(_:)))
         longPressGesture.minimumPressDuration = 1.0
         self.addGestureRecognizer(longPressGesture)
+    }
+    
+    var zoomLevel: Int {
+        get {
+            return Int(log2(360 * (Double(self.frame.size.width/256) / self.region.span.longitudeDelta)) + 1);
+        }
+        
+        set (newZoomLevel){
+            setCenterCoordinate(self.centerCoordinate, zoomLevel: newZoomLevel, animated: false)
+        }
+    }
+    
+    private func setCenterCoordinate(coordinate: CLLocationCoordinate2D, zoomLevel: Int, animated: Bool){
+        let span = MKCoordinateSpanMake(0, 360 / pow(2, Double(zoomLevel)) * Double(self.frame.size.width) / 256)
+        setRegion(MKCoordinateRegionMake(centerCoordinate, span), animated: animated)
     }
     
     func addCustomAnnotation(gestureRecognizer:UIGestureRecognizer){
@@ -101,22 +118,7 @@ class JSMapView: MKMapView, MKMapViewDelegate{
             })
         }
     }
-    
-    var zoomLevel: Int {
-        get {
-            return Int(log2(360 * (Double(self.frame.size.width/256) / self.region.span.longitudeDelta)) + 1);
-        }
-        
-        set (newZoomLevel){
-            setCenterCoordinate(self.centerCoordinate, zoomLevel: newZoomLevel, animated: false)
-        }
-    }
-    
-    private func setCenterCoordinate(coordinate: CLLocationCoordinate2D, zoomLevel: Int, animated: Bool){
-        let span = MKCoordinateSpanMake(0, 360 / pow(2, Double(zoomLevel)) * Double(self.frame.size.width) / 256)
-        setRegion(MKCoordinateRegionMake(centerCoordinate, span), animated: animated)
-    }
-    
+
     func addNewPinsFromList(properties: [Property]) -> Void{
         
         self.removeAnnotations(self.annotations);
@@ -127,20 +129,23 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         for property in properties {
         
-            var distanceMain = "0";
-            
-            if let distance = property.distance {
-                
-                let distanceStr = distance as String;
-                let distanceINT = Int(Double(distanceStr)!);
-                distanceMain = String(distanceINT) + "km";
+            var title = "";
+          
+            if property.distance.length > 0 {
+                title = property.distance;
             }
-        
+            if title.length == 0 {
+                title = property.duration + " away";
+            }
+            else  {
+                    title =  title + ", \(property.duration) away";
+            }
             
+
             let dropPin = CustomPointAnnotation();
             dropPin.coordinate = CLLocationCoordinate2D(latitude: Double(property.latitude!)!, longitude: Double(property.longitude!)!);
             dropPin.title = property.titleMsg! as String;
-            dropPin.subtitle = distanceMain + " away";
+            dropPin.subtitle = title;
             dropPin.imageName = "pickup_pin";// "pickup_pin" / "dropOff_pin"
             
             self.addAnnotation(dropPin);

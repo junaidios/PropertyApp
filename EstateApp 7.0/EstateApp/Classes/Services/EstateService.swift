@@ -100,7 +100,7 @@ class EstateService: BaseService {
                 
                 let property = Property();
                 property.mapPropertyUsing(obj as! NSDictionary);
-                property.distance = obj["distance"] as? String;
+                property.distance = obj["distance"] as! String;
                 propertyList.addObject(property);
                 
             }
@@ -139,7 +139,7 @@ class EstateService: BaseService {
                 
                 let property = Property();
                 property.mapPropertyUsing(obj as! NSDictionary);
-                property.distance = obj["user_distance"] as? String;
+                property.distance = obj["user_distance"] as! String;
                 propertyList.addObject(property);
             }
             
@@ -180,7 +180,7 @@ class EstateService: BaseService {
                 
                 let property = Property();
                 property.mapPropertyUsing(obj as! NSDictionary);
-                property.distance = obj["distance"] as? String;
+                property.distance = obj["distance"] as! String;
                 propertyList.addObject(property);
                 
             }

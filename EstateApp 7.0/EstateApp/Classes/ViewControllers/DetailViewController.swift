@@ -32,15 +32,16 @@ class DetailViewController: BaseViewController, UICollectionViewDelegate, UIColl
         super.viewDidLoad()
         
         lblDistance.text = "N/A";
-        
-        mapView.addNewPin(property);
-        if let distance = property.distance {
+
+        LocationService.getPropertyDurationsFromCurrentLocation([property], success: { (data) in
             
-            let distanceStr = distance as String;
-            let distanceINT = Int(Double(distanceStr)!);
-            
-            lblDistance.text = String(distanceINT) + "km";
-        }
+            self.lblDistance.text = self.property.distance + ", " + self.property.duration + " away";
+            self.mapView.addNewPinsFromList([self.property]);
+            self.mapView.zoomLevel = 16;
+
+            }, failure: { (error) in
+                
+        })
         
         lblTileMain.text = property.titleMsg;
         

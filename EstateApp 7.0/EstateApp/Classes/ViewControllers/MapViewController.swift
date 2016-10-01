@@ -56,9 +56,17 @@ class MapViewController: BaseViewController {
             
             let properties = propertyList as! [Property];
             
-            self.mapView.addNewPinsFromList(properties);
-            
-            self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+            LocationService.getPropertyDurationsFromCurrentLocation(properties, success: { (data) in
+                
+                self.mapView.addNewPinsFromList(properties);
+                
+                self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+                
+                }, failure: { (error) in
+                    
+            })
+
+          
             
             },
               

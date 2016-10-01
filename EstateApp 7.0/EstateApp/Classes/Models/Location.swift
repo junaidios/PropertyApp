@@ -16,6 +16,8 @@ class Location: BaseEntity {
     var titleMsg :String?
     var latitude :String = ""
     var longitude :String = ""
+    var distance :String = ""
+    var durations :String = ""
     
     
     func mapLocationUsing(data: NSDictionary) -> Location{
