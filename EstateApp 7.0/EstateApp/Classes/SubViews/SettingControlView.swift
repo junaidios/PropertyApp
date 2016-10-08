@@ -33,6 +33,11 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
     @IBOutlet weak var sliderPrice: UISlider!
     @IBOutlet weak var sliderRadius: UISlider!
     
+    @IBOutlet weak var radiusPriority: JSTextField!
+    @IBOutlet weak var roomsPriority: JSTextField!
+    @IBOutlet weak var bathsPriority: JSTextField!
+    @IBOutlet weak var pricePriority: JSTextField!
+    
     @IBOutlet weak var switchBtnLocation: UISwitch!
     @IBOutlet weak var priceSliderContainer: UIView!
     
@@ -42,8 +47,17 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
     
     func priceRangeSliderValueChanged(rangeSlider: RangeSlider){
         
-        let minRange = Double(rangeSlider.lowerValue/1000) * 1000;
-        let maxRange = Double(rangeSlider.upperValue/1000) * 1000;
+        
+        var val = Double(rangeSlider.lowerValue)
+        var rounded = val % 5000;
+        
+        let minRange = val - rounded;
+        
+        val = Double(rangeSlider.upperValue)
+        rounded = val % 5000;
+        
+        let maxRange = val - rounded;
+       
         
         lblPrice.text = minRange.getCurrencyFormat() + " - " + maxRange.getCurrencyFormat();
         
@@ -51,6 +65,34 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
     }
     
     var isOpen = false
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+//        if segue.identifier == "AddTagMetaController" {
+        
+            //            self.btnDone.hidden = true
+            
+            
+            let popoverViewController = segue.destinationViewController
+            popoverViewController.modalPresentationStyle = UIModalPresentationStyle.Popover
+        
+            self.definesPresentationContext = true; //self is presenting view controller
+            
+            popoverViewController.popoverPresentationController?.backgroundColor = UIColor(white: 1.0, alpha: 0.85);
+            popoverViewController.popoverPresentationController?.permittedArrowDirections = .Any
+            if #available(iOS 9.0, *) {
+                popoverViewController.popoverPresentationController?.canOverlapSourceViewRect = true
+                
+            } else {
+                // Fallback on earlier versions
+            }
+            
+            popoverViewController.popoverPresentationController?.permittedArrowDirections = .Any
+            popoverViewController.preferredContentSize = CGSize(width: 200, height: 60)
+            
+           
+//        }
+    }
 
     @IBAction func btnToSwitchOnOffCustomLocation(switchBtn: UISwitch) {
         
@@ -80,6 +122,13 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
         setting.locationName = txtFieldLocation.text!;
         setting.isCustomLocation = switchBtnLocation.on;
         
+        setting.roomsPriority = roomsPriority.text!;
+        setting.bathsPriority = bathsPriority.text!;
+        setting.pricePriority = pricePriority.text!;
+        setting.radiusPriority = radiusPriority.text!;
+        
+        
+        
         setting.saveSettings();
         
         NSNotificationCenter.defaultCenter().postNotificationName("mapViewPinReloaded", object: nil)
@@ -93,7 +142,7 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
     {
         priceSliderContainer.addSubview(self.priceRangeSlider)
 
-        self.priceRangeSlider.addTarget(self, action: "priceRangeSliderValueChanged:", forControlEvents: .ValueChanged)
+        self.priceRangeSlider.addTarget(self, action: #selector(SettingControlView.priceRangeSliderValueChanged(_:)), forControlEvents: .ValueChanged)
         self.priceRangeSlider.trackHeighlightTintColor = UIColor(hex: "#52B1E1");
         self.priceRangeSlider.curvaceousness = 1.0
         self.priceRangeSlider.frame = priceSliderContainer.bounds
@@ -165,6 +214,18 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
         super.viewWillAppear(animated);
         
         let setting = Settings.loadSettings();
+        
+        
+        roomsPriority.text = setting.roomsPriority;
+        bathsPriority.text = setting.bathsPriority;
+        pricePriority.text = setting.pricePriority;
+        radiusPriority.text = setting.radiusPriority;
+        
+        roomsPriority.colorUpdate();
+        bathsPriority.colorUpdate();
+        pricePriority.colorUpdate();
+        radiusPriority.colorUpdate();
+        
         lblRooms.text = setting.rooms;
         lblBaths.text = setting.baths;
         lblRadius.text = setting.radius  + "km";

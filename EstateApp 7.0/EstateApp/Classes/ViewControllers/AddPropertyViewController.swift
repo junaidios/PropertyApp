@@ -71,9 +71,14 @@ class AddPropertyViewController: BaseViewController, UIImagePickerControllerDele
     func openCamera(){
         
         if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)){
+
             picker.sourceType = UIImagePickerControllerSourceType.Camera
             self.presentViewController(picker, animated: true, completion: nil)
-        }else{
+ 
+        }
+        else
+        {
+            
             let alert = UIAlertView()
             alert.title = "Warning"
             alert.message = "You don't have camera"
@@ -92,6 +97,10 @@ class AddPropertyViewController: BaseViewController, UIImagePickerControllerDele
         tfCity.text = city;
         tfCountry.text = country;
         latLong = coordinate;
+    }
+    
+    func mapViewAnnonationTap(property: Property) {
+        
     }
     
     //MARK:UIImagePickerControllerDelegate

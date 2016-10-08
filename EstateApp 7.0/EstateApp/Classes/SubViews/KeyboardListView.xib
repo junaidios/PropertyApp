@@ -37,14 +37,14 @@
                                 <action selector="btnHidePressed:" destination="5UJ-OG-DJZ" eventType="touchUpInside" id="ePG-ub-jRC"/>
                             </connections>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose City:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eHp-5J-zVc">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change Priority" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eHp-5J-zVc">
                             <rect key="frame" x="8" y="0.0" width="252" height="33"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstItem="XZi-4h-UpT" firstAttribute="top" secondItem="DTv-Zy-MLx" secondAttribute="top" id="5M5-eN-zMk"/>
                         <constraint firstAttribute="trailing" secondItem="XZi-4h-UpT" secondAttribute="trailing" id="Kaf-Ug-XQX"/>
@@ -57,7 +57,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="Lyr-QV-b6L" secondAttribute="bottom" constant="25" id="8wM-57-7AG"/>
                 <constraint firstItem="Lyr-QV-b6L" firstAttribute="top" secondItem="DTv-Zy-MLx" secondAttribute="bottom" constant="8" id="d6j-Vi-pGA"/>

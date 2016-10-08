@@ -12,8 +12,13 @@ import MapKit
 
 protocol JSMapViewDelegate: class {
     
+    
+    
     /// Media Launched successfully on the cast device
     func mapViewSelectedLocation(coordinate: CLLocationCoordinate2D, city: String, country:String);
+    
+    
+    func mapViewAnnonationTap(property: Property);
 }
 
 
@@ -147,7 +152,7 @@ class JSMapView: MKMapView, MKMapViewDelegate{
             dropPin.title = property.titleMsg! as String;
             dropPin.subtitle = title;
             dropPin.imageName = "pickup_pin";// "pickup_pin" / "dropOff_pin"
-            
+            dropPin.data = property;
             self.addAnnotation(dropPin);
 
             self.centerCoordinate = dropPin.coordinate;
@@ -155,7 +160,24 @@ class JSMapView: MKMapView, MKMapViewDelegate{
     }
 
     
-    func addNewPin(property: Property) -> CustomPointAnnotation{
+    func addUserPin() -> CLLocationCoordinate2D{
+        
+        self.delegate = self
+        self.showsUserLocation = false;
+        
+        let setting = Settings.loadSettings();
+        
+        let dropPin2 = CustomPointAnnotation();
+        dropPin2.coordinate = CLLocationCoordinate2D(latitude:  Double(setting.latitude)!, longitude:  Double(setting.longitude)!);
+        dropPin2.title = "Your Locaiton";
+        dropPin2.imageName =  "dropOff_pin";
+        
+        self.addAnnotation(dropPin2);
+        
+        return dropPin2.coordinate;
+    }
+    
+    func addShowRoutePin(property: Property) -> CustomPointAnnotation{
         
         self.zoomLevel = 10;
         
@@ -168,7 +190,8 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         dropPin.coordinate = CLLocationCoordinate2D(latitude: Double(property.latitude!)!, longitude: Double(property.longitude!)!);
         dropPin.title = property.titleMsg! as String;
         dropPin.imageName = "pickup_pin";// "pickup_pin" / "dropOff_pin"
-        
+        dropPin.data = property;
+
         self.addAnnotation(dropPin);
         
         self.centerCoordinate = dropPin.coordinate;
@@ -178,10 +201,10 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
 
         let dropPin2 = CustomPointAnnotation();
-        dropPin2.coordinate = CLLocationCoordinate2D(latitude:  Double(setting.latitude)!, longitude:  Double(setting.latitude)!);
+        dropPin2.coordinate = CLLocationCoordinate2D(latitude:  Double(setting.latitude)!, longitude:  Double(setting.longitude)!);
         dropPin2.title = "Your Locaiton";
         dropPin2.imageName =  "dropOff_pin";
-        
+
         self.addAnnotation(dropPin2);
 
         
@@ -272,7 +295,27 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         let customPin = annotation as! CustomPointAnnotation
         anView!.image = UIImage(named:customPin.imageName)
         
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        
+        let image : UIImage = UIImage(named:"ic_black")!.imageWithRenderingMode(.AlwaysTemplate)
+
+        button.setImage(image, forState: .Normal)
+
+        button.tintColor = UIColor.lightGrayColor()
+        
+        anView!.rightCalloutAccessoryView = button
+        
         return anView
+    }
+    
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        let pinView = view.annotation as! CustomPointAnnotation;
+        
+        if let property  = pinView.data {
+            
+            self.delegated?.mapViewAnnonationTap(property);
+        }
     }
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, didChangeDragState newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
@@ -286,8 +329,8 @@ class JSMapView: MKMapView, MKMapViewDelegate{
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
         
         let lineRenderer = MKPolylineRenderer(polyline: (myRoute?.polyline)!)
-        lineRenderer.strokeColor = UIColor.blueColor(); //
-        lineRenderer.lineWidth = 10.0
+        lineRenderer.strokeColor = UIColor.blueThemeColor(); //
+        lineRenderer.lineWidth = 5.0
         return lineRenderer;
     }
     
@@ -359,5 +402,6 @@ class JSMapView: MKMapView, MKMapViewDelegate{
 
 class CustomPointAnnotation: MKPointAnnotation {
     var imageName: String!
+    var data: Property!
 }
 

@@ -10,7 +10,7 @@ import UIKit
 
 class KeyboardListView: UIView, UIPickerViewDataSource, UIPickerViewDelegate{
 
-    var listOfOptions : NSMutableArray = [];
+    var listOfOptions : [String] = [];
     var tfTextField : UITextField!
     
     @IBOutlet weak var pickerView: UIPickerView!
@@ -21,12 +21,12 @@ class KeyboardListView: UIView, UIPickerViewDataSource, UIPickerViewDelegate{
         
         if(self.listOfOptions.count > 0) {
             
-            let cityName = self.listOfOptions[0] as! String;
+            let cityName = self.listOfOptions[0];
             self.tfTextField.text = cityName;
         }
     }
     
-    class func loadWithNib(textField: UITextField, options: NSMutableArray) -> KeyboardListView{
+    class func loadWithNib(textField: UITextField, options: [String]) -> KeyboardListView{
         
         let view: KeyboardListView = NSBundle.mainBundle().loadNibNamed("KeyboardListView",
             owner: self, options: nil)[0] as! KeyboardListView
@@ -35,11 +35,25 @@ class KeyboardListView: UIView, UIPickerViewDataSource, UIPickerViewDelegate{
         
         view.tfTextField = textField;
         
-        view.listOfOptions = NSMutableArray(array: options);
+        view.listOfOptions = options;
         
         view.loadCityList();
 
         view.frame = CGRect(x: view.frame.origin.x, y: view.frame.origin.y, width: view.frame.size.width, height: 216.0);
+        
+        
+        textField.backgroundColor = UIColor.redColor();
+        
+        let row = 10 - Int(textField.text!)!
+        
+        if row > 3 && row <= 7 {
+            textField.backgroundColor = UIColor.orangeColor();
+        }
+        if row > 7 && row <= 10 {
+            
+            textField.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
+        }
+
         
         return view;
     }
@@ -58,20 +72,35 @@ class KeyboardListView: UIView, UIPickerViewDataSource, UIPickerViewDelegate{
     
     func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         
-        let cityName = listOfOptions[row] as! String;
+        let cityName = listOfOptions[row];
         
-//        let cityName = cityData["human_city_name"] as! String;
+        var lblTitle = NSAttributedString(string: cityName, attributes: [NSFontAttributeName:UIFont.boldSystemFontOfSize(10),NSForegroundColorAttributeName:UIColor.redColor()]);
         
-        let lblTitle = NSAttributedString(string: cityName, attributes: [NSFontAttributeName:UIFont(name: "Georgia", size: 10.0)!,NSForegroundColorAttributeName:UIColor.whiteColor()])
+        if row > 3 && row <= 7 {
+             lblTitle = NSAttributedString(string: cityName, attributes: [NSFontAttributeName:UIFont.boldSystemFontOfSize(10),NSForegroundColorAttributeName:UIColor.orangeColor()])
+        }
+        if row > 7 && row <= 10 {
+             lblTitle = NSAttributedString(string: cityName, attributes: [NSFontAttributeName:UIFont.boldSystemFontOfSize(10),NSForegroundColorAttributeName:UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0)])
+        }
         
         return lblTitle
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        let cityName = listOfOptions[row] as! String;
+        let cityName = listOfOptions[row];
         
 //        let cityName = cityData["human_city_name"] as! String;
+        
+        tfTextField.backgroundColor = UIColor.redColor();
+
+        if row > 3 && row <= 7 {
+            tfTextField.backgroundColor = UIColor.orangeColor();
+        }
+        if row > 7 && row <= 10 {
+            
+            tfTextField.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
+        }
         
         tfTextField.text = cityName;
         

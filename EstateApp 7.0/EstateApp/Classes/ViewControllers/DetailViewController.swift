@@ -37,8 +37,14 @@ class DetailViewController: BaseViewController, UICollectionViewDelegate, UIColl
             
             self.lblDistance.text = self.property.distance + ", " + self.property.duration + " away";
             self.mapView.addNewPinsFromList([self.property]);
-            self.mapView.zoomLevel = 16;
+            let propertyPosition = CLLocationCoordinate2D(latitude: Double(self.property.latitude!)!, longitude: Double(self.property.longitude!)!);
 
+            let userPosition = self.mapView.addUserPin();
+
+            self.mapView.showRouteForPoints(userPosition, point2: propertyPosition);
+        
+            self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+            
             }, failure: { (error) in
                 
         })

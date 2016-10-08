@@ -21,6 +21,12 @@ class Settings: BaseEntity {
     var minPrice : String = ""
     var maxPrice : String = ""
     
+    
+    var radiusPriority: String = "10"
+    var pricePriority : String = "10"
+    var roomsPriority : String = "10"
+    var bathsPriority : String = "10"
+    
     override init() {
         super.init()
     }
@@ -37,6 +43,11 @@ class Settings: BaseEntity {
         aCoder.encodeObject(baths,             forKey:"baths")
         aCoder.encodeObject(minPrice,          forKey:"minPrice")
         aCoder.encodeObject(maxPrice,          forKey:"maxPrice")
+        
+        aCoder.encodeObject(radiusPriority,         forKey:"radiusPriority")
+        aCoder.encodeObject(pricePriority,          forKey:"pricePriority")
+        aCoder.encodeObject(roomsPriority,          forKey:"roomsPriority")
+        aCoder.encodeObject(bathsPriority,          forKey:"bathsPriority")
     }
     
     
@@ -53,6 +64,11 @@ class Settings: BaseEntity {
         self.baths              = aDecoder.decodeObjectForKey("baths") as! String;
         self.minPrice           = aDecoder.decodeObjectForKey("minPrice") as! String;
         self.maxPrice           = aDecoder.decodeObjectForKey("maxPrice") as! String;
+
+        self.radiusPriority          = aDecoder.decodeObjectForKey("radiusPriority") as! String;
+        self.pricePriority           = aDecoder.decodeObjectForKey("pricePriority") as! String;
+        self.roomsPriority           = aDecoder.decodeObjectForKey("roomsPriority") as! String;
+        self.bathsPriority           = aDecoder.decodeObjectForKey("bathsPriority") as! String;
     }
     
     
@@ -75,7 +91,12 @@ class Settings: BaseEntity {
             settings.longitude = "00.00";
             settings.baths = "2";
             settings.minPrice = "20000";
-            settings.maxPrice = "8000000";
+            settings.maxPrice = "800000";
+            
+            settings.pricePriority  = "10";
+            settings.radiusPriority = "10";
+            settings.roomsPriority  = "10";
+            settings.bathsPriority  = "10";
             
             return settings;
         }

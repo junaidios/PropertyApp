@@ -57,31 +57,32 @@ class LocationService: BaseService {
                     let rowsArray = resultData ["rows"] as! [[String : AnyObject]]
                     
                     
-                    let row = rowsArray.first;
-                    
-                    let elementsArray = row!["elements"] as! [[String : AnyObject]];
-                    
-                    for i in 0..<elementsArray.count {
+                    if let row = rowsArray.first {
                         
-                        let element = elementsArray[i];
+                        let elementsArray = row["elements"] as! [[String : AnyObject]];
                         
-                        if element["status"] as! String == "OK" {
+                        for i in 0..<elementsArray.count {
                             
-                            let location = locations[i];
+                            let element = elementsArray[i];
                             
-                            if let elementDuration =  element["duration"] as? [String: AnyObject]{
+                            if element["status"] as! String == "OK" {
                                 
-                                let duration = elementDuration["text"] as! String;
-                                location.duration = duration;
-                            }
-                            if let elementDistance =  element["distance"] as? [String: AnyObject]{
+                                let location = locations[i];
                                 
-                                let distance = elementDistance["text"] as! String;
-                                location.distance = distance;
+                                if let elementDuration =  element["duration"] as? [String: AnyObject]{
+                                    
+                                    let duration = elementDuration["text"] as! String;
+                                    location.duration = duration;
+                                }
+                                if let elementDistance =  element["distance"] as? [String: AnyObject]{
+                                    
+                                    let distance = elementDistance["text"] as! String;
+                                    location.distance = distance;
+                                }
                             }
                         }
+                        
                     }
-                    
                     
                     success(data: "");
                     

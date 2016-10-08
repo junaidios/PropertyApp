@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class MapViewController: BaseViewController {
+class MapViewController: BaseViewController, JSMapViewDelegate {
 
 
     @IBOutlet weak var mapView: JSMapView!
@@ -18,6 +18,10 @@ class MapViewController: BaseViewController {
         super.viewDidLoad()
         
         self.setNavigationBarItem()
+        self.mapView.delegated = self;
+
+        reloadData();
+
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -34,7 +38,6 @@ class MapViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
         
-        reloadData();
     }
 
     @IBAction func btnReloadedPressed(sender: AnyObject) {
@@ -47,20 +50,24 @@ class MapViewController: BaseViewController {
       
         let setting = Settings.loadSettings();
         
-        let user_lat = setting.latitude;
-        let user_lng = setting.longitude;
-        let radius = setting.radius;
+//        let user_lat = setting.latitude;
+//        let user_lng = setting.longitude;
+//        let radius = setting.radius;
         
         
-        EstateService.listOfPropertiesForMaps(user_lat, longitude: user_lng, ulatitude: user_lat, ulongitude: user_lng, radius: radius, success: { (propertyList) -> Void in
+        EstateService.searchListOfProperties( { (propertyList) -> Void in
             
             let properties = propertyList as! [Property];
             
             LocationService.getPropertyDurationsFromCurrentLocation(properties, success: { (data) in
                 
+                
                 self.mapView.addNewPinsFromList(properties);
                 
+                self.mapView.addUserPin();
+                
                 self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+                
                 
                 }, failure: { (error) in
                     
@@ -71,20 +78,34 @@ class MapViewController: BaseViewController {
             },
               
         failure: { (error) -> Void in
-                                                
-                                                JSAlertView.show((error?.localizedDescription)!);
+            
+            JSAlertView.show((error?.localizedDescription)!);
         })
         
     
     }
-    /*
-    // MARK: - Navigation
+    
+    func mapViewAnnonationTap(property: Property){
+    
+        self.performSegueWithIdentifier("detail", sender: property);
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
     }
-    */
+ 
+
+    func mapViewSelectedLocation(coordinate: CLLocationCoordinate2D, city: String, country: String) {
+        
+    }
+    
+
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "detail" {
+            
+            let destination = segue.destinationViewController as! DetailViewController;
+            destination.property = sender as! Property;
+            
+        }
+    }
 
 }
