@@ -33,14 +33,21 @@ class JSTextField: UITextField, UITextFieldDelegate {
                 list.append("\(10-i)");
             }
             
-            self.inputView = KeyboardListView.loadWithNib(self, options: list);
+            self.inputView = KeyboardListView.loadWithNib(self, options: list, color: true);
+            
+        }
+        if self.tag == 100 { // Countries
+            
+            let list = ["House", "Plot", "Shop", "Farm"];
+            
+            self.inputView = KeyboardListView.loadWithNib(self, options: list, color: false);
             
         }
         if self.tag == 102 { // Countries
             
-//            let list = NSMutableArray(array: EODatabase.instance.getCountries());
+            let list = ["New", "Old", "Good", "Nice"];
             
-//            self.inputView = KeyboardListView.loadWithNib(self,  title:"Select Country:", options: list);
+            self.inputView = KeyboardListView.loadWithNib(self, options: list, color: false);
             
         }
     }

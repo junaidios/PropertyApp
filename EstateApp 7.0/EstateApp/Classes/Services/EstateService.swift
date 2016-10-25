@@ -74,6 +74,7 @@ class EstateService: BaseService {
 //                JSAlertView.show((error?.localizedDescription)!);
 
                 print(error?.localizedDescription);
+                failure(error: error);
                 
         }
     }
