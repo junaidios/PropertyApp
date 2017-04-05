@@ -51,7 +51,7 @@ construct URL requests.
     
     extension NSURL: URLStringConvertible {
         public var URLString: String {
-            return absoluteString
+            return absoluteString!
         }
     }
     

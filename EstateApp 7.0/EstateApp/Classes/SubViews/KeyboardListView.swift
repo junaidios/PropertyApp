@@ -30,7 +30,7 @@ class KeyboardListView: UIView, UIPickerViewDataSource, UIPickerViewDelegate{
     class func loadWithNib(textField: UITextField, options: [String], color : Bool) -> KeyboardListView{
         
         let view: KeyboardListView = NSBundle.mainBundle().loadNibNamed("KeyboardListView",
-            owner: self, options: nil)[0] as! KeyboardListView
+            owner: self, options: nil)![0] as! KeyboardListView
         
         view.frame = UIScreen.mainScreen().bounds
         

@@ -43,7 +43,7 @@ class LocationManager : CLLocationManager, CLLocationManagerDelegate {
         
         self.startUpdatingLocation()
         
-        if self.respondsToSelector("requestAlwaysAuthorization") {
+        if self.respondsToSelector(#selector(CLLocationManager.requestAlwaysAuthorization)) {
             
             self.requestAlwaysAuthorization()
         }

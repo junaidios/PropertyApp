@@ -164,7 +164,7 @@ extension String {
         return links!.filter { link in
             return link.URL != nil
             }.map { link -> String in
-                return link.URL!.absoluteString
+                return link.URL!.absoluteString!
         }
     }
     
