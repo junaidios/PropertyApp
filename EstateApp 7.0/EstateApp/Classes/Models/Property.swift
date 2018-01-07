@@ -10,29 +10,30 @@ import UIKit
 
 class Property : BaseEntity {
     
-    
-    var propertyId :String?
-    var titleMsg :String?
-    var size :String?
-    var type :String?
-    var demand :String?
-    var condition :String?
-    var detail :String?
-    var numOfRoom :String?
-    var numOfBath :String?
-    var latitude :String?
-    var longitude :String?
-    var city :String?
-    var country :String?
-    var specialMsg :String?
-    var ownerName :String?
-    var ownerNumber :String?
-    var ownerAddress :String?
-    var ownerEmail :String?
-    var distance :String = ""
-    var duration :String = ""
-    var photo :String?
-    var photos = NSMutableArray();
+    var propertyId : String = ""
+    var titleMsg : String = ""
+    var size : String = ""
+    var type : String = ""
+    var demand : String = ""
+    var condition : String = ""
+    var detail : String = ""
+    var numOfRoom : String = ""
+    var numOfBath : String = ""
+    var latitude : String = ""
+    var longitude : String = ""
+    var city : String = ""
+    var country : String = ""
+    var specialMsg : String = ""
+    var ownerName : String = ""
+    var ownerNumber : String = ""
+    var ownerAddress : String = ""
+    var ownerEmail : String = ""
+    var distance : String = ""
+    var duration : String = ""
+    var distanceValue : Int = 0
+    var durationValue : Int = 0
+    var photo : String = ""
+    var photos = [String]();
 
 //"propertyid": "1",
 //"title_msg": "test",
@@ -55,9 +56,9 @@ class Property : BaseEntity {
 //"photos": []
     
     
-    func mapPropertyUsing(data: NSDictionary) -> Property{
+    func mapPropertyUsing(data: [String: Any]) -> Void {
         
-        let list : NSMutableArray = [
+        let list : [String] = [
             //                "Any Type",
             //            "--------- Homes ---------",
             "Houses",
@@ -83,40 +84,36 @@ class Property : BaseEntity {
             "Other"];
 
         
-        self.propertyId = data["propertyid"] as? String;
-        self.titleMsg = data["title_msg"] as? String;
-        self.size = data["size"] as? String;
-        
-        let typeId = Int((data["type"] as? String)!);
-        
-        self.type = list[typeId!] as? String;
-        self.demand = data["demand"] as? String;
-        self.condition = data["condition"] as? String;
-        self.detail = data["detail"] as? String;
-        self.numOfRoom = data["number_of_rooms"] as? String;
-        self.numOfBath = data["number_of_baths"] as? String;
-        self.city = data["city"] as? String;
-        self.country = data["country"] as? String;
-        self.latitude = data["latitude"] as? String;
-        self.longitude = data["longitude"] as? String;
-        self.specialMsg = data["special_msg"] as? String;
-        self.ownerNumber = data["owner_number"] as? String;
-        self.ownerName = data["owner_name"] as? String;
-        self.ownerAddress = data["owner_address"] as? String;
-        self.ownerEmail = data["owner_email"] as? String;
-        let arr = data["photos"] as? NSArray;
-        self.photo = ""
-        
-        if let subURL = arr?.firstObject as? String {
-            self.photo = baseURLString.stringByAppendingString(subURL)
+        self.propertyId = String.stringValue(data["propertyid"]);
+        self.titleMsg = String.stringValue(data["title_msg"]);
+        self.size = String.stringValue(data["size"]);
+        let typeId = String.numberValue(data["type"] as AnyObject).intValue;
+        self.type = list[typeId];
+        self.demand = String.stringValue(data["demand"]);
+        self.condition = String.stringValue(data["condition"]);
+        self.detail = String.stringValue(data["detail"]);
+        self.numOfRoom = String.stringValue(data["number_of_rooms"]);
+        self.numOfBath = String.stringValue(data["number_of_baths"]);
+        self.city = String.stringValue(data["city"]);
+        self.country = String.stringValue(data["country"]);
+        self.latitude = String.stringValue(data["latitude"]);
+        self.longitude = String.stringValue(data["longitude"]);
+        self.specialMsg = String.stringValue(data["special_msg"]);
+        self.ownerNumber = String.stringValue(data["owner_number"]);
+        self.ownerName = String.stringValue(data["owner_name"]);
+        self.ownerAddress = String.stringValue(data["owner_address"]);
+        self.ownerEmail = String.stringValue(data["owner_email"]);
+        if let arr = data["photos"] as? [String] {
+            self.photo = ""
+            if let subURL = arr.first {
+                self.photo = BASE_URL.appendingFormat(subURL)
+            }
+            
+            for url in arr {
+                self.photos.append(BASE_URL.appendingFormat(url ))
+            }
         }
         
-        for url in arr! {
-        
-            self.photos.addObject(baseURLString.stringByAppendingString(url as! String))
-        }
-        
-        return self;
     }
     
 }

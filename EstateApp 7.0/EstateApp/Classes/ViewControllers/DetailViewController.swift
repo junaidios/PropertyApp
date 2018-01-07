@@ -9,61 +9,72 @@
 import UIKit
 import MapKit
 
-class DetailViewController: BaseViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class DetailViewController: BaseViewController,  UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
 
     var property = Property();
+    var titles = [String]();
+    var values = [String]();
+    
     @IBOutlet weak var lblTileMain: UILabel!
     @IBOutlet weak var lblDistance: UILabel!
-    @IBOutlet weak var lblTitle: UILabel!
-    @IBOutlet weak var lblSize: UILabel!
-    @IBOutlet weak var lblType: UILabel!
-    @IBOutlet weak var lblDemand: UILabel!
-    @IBOutlet weak var lblCondition: UILabel!
-    @IBOutlet weak var lblCity: UILabel!
-    @IBOutlet weak var lblCountry: UILabel!
-    @IBOutlet weak var lblRooms: UILabel!
-    @IBOutlet weak var lblBaths: UILabel!
-    @IBOutlet weak var lblDetail: UILabel!
-    @IBOutlet weak var lblNote: UILabel!
+    @IBOutlet weak var tblView: UITableView!
     @IBOutlet weak var mapView: JSMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lblDistance.text = "N/A";
+        tblView.estimatedRowHeight = 97;
+        tblView.rowHeight = UITableViewAutomaticDimension;
 
-        LocationService.getPropertyDurationsFromCurrentLocation([property], success: { (data) in
-            
-            self.lblDistance.text = self.property.distance + ", " + self.property.duration + " away";
+        lblTileMain.text = property.titleMsg;
+
+        LocationService.getPropertyDurationsFromCurrentLocation(locations: [property], success: { (data) in
+
+            if let distanceStr = data as? [(String, Int, String, Int)], distanceStr.count > 0 {
+                if let tupple = distanceStr.first {
+                    self.lblDistance.text = tupple.0 + ", " + tupple.2 + " away";
+                    self.lblDistance.text = "";
+
+                    if tupple.0.length > 0 {
+                        self.lblDistance.text = tupple.0;
+                    }
+                    if tupple.2.length > 0 {
+                        if  self.lblDistance.text!.length == 0 {
+                            self.lblDistance.text = tupple.2;
+                        }
+                        else {
+                            self.lblDistance.text = self.lblDistance.text! + ", " + tupple.2;
+                        }
+                    }
+                }
+            }
             self.mapView.addNewPinsFromList([self.property]);
-            let propertyPosition = CLLocationCoordinate2D(latitude: Double(self.property.latitude!)!, longitude: Double(self.property.longitude!)!);
+            let propertyPosition = CLLocationCoordinate2D(latitude: Double(self.property.latitude)!, longitude: Double(self.property.longitude)!);
 
             let userPosition = self.mapView.addUserPin();
 
-            self.mapView.showRouteForPoints(userPosition, point2: propertyPosition);
-        
+            self.mapView.showRouteForPoints(point1: userPosition, point2: propertyPosition);
+
             self.mapView.showAnnotations(self.mapView.annotations, animated: true);
-            
+
             }, failure: { (error) in
-                
+
         })
         
-        lblTileMain.text = property.titleMsg;
+        titles = ["Title", "Detail", "Size",
+                  "Type", "Demand", "Condition",
+                  "City", "Country",
+                  "Rooms", "Baths",
+                  "Note"];
         
-        lblTitle.text = property.titleMsg;
-        lblSize.text = property.size;
-        lblType.text = property.type;
-        lblDemand.text =  property.demand!.getCurrencyFormat();
-        lblCondition.text = property.condition;
-        lblCity.text = property.city;
-        lblCountry.text = property.country;
-        lblRooms.text = property.numOfRoom;
-        lblBaths.text = property.numOfBath;
-        lblDetail.text = property.detail;
-        lblNote.text = property.specialMsg;
+        values = [property.titleMsg, property.detail, property.size,
+                  property.type, "$" + property.demand.toNumber, property.condition,
+                  property.city, property.country,
+                  property.numOfRoom, property.numOfBath,
+                  property.specialMsg];
         
-
+        self.tblView.reloadData();
         // Do any additional setup after loading the view.
     }
 
@@ -72,17 +83,16 @@ class DetailViewController: BaseViewController, UICollectionViewDelegate, UIColl
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func btnGetDirectionsPressed(sender: AnyObject) {
+    @IBAction func btnGetDirectionsPressed(_ sender: AnyObject) {
         
-        
-        if (UIApplication.sharedApplication().canOpenURL(NSURL(string:"comgooglemaps://")!)) {
+        if (UIApplication.shared.canOpenURL(URL(string:"comgooglemaps://")!)) {
             
-            let lat = property.latitude! as String;
-            let lng = property.longitude! as String;
+            let lat = property.latitude;
+            let lng = property.longitude;
             
             let urlString = "comgooglemaps://?saddr=&daddr=" + lat + "," + lng + "&directionsmode=driving";
             
-            UIApplication.sharedApplication().openURL(NSURL(string:urlString)!)
+            UIApplication.shared.openURL(URL(string:urlString)!)
             
         } else {
 //            NSLog("Can't use comgooglemaps://");
@@ -99,32 +109,55 @@ class DetailViewController: BaseViewController, UICollectionViewDelegate, UIColl
     
     }
 
-    
+    // MARK: - UICollectionView
+
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1;
     }
     
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return property.photos.count;
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let url = property.photos[indexPath.row] as! String;
+        let url = property.photos[indexPath.row] ;
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath)  ;
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)  ;
         
-        let imgView = cell.viewWithTag(100) as! AsyncImageView;
+        let imgView = cell.viewWithTag(100) as! UIImageView;
         
-        imgView.setURL(NSURL(string: url), placeholderImage: UIImage(named: "imagePP"))
-        
+        imgView.setImageWithURI(url);
+        imgView.cornerRadius(4);
+
         return cell;
         
     }
     
+    // MARK: - UITableView
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return values.count;
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let title = titles[indexPath.row];
+        let value = values[indexPath.row];
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) ;
+        
+        let lblTitle = cell.viewWithTag(100) as! UILabel;
+        let lblDetail = cell.viewWithTag(101) as! UILabel;
+        
+        lblTitle.text = title;
+        lblDetail.text = value;
+        
+        return cell;
+    }
     
     /*
     // MARK: - Navigation

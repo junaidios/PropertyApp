@@ -21,7 +21,11 @@ class BaseViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
+    @IBAction func btnBackPressed(_ sender: Any) {
+        
+        self.navigationController?.popViewController(animated: true);
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -43,8 +47,8 @@ class BaseViewController: UIViewController {
         
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent;
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent;
     }
 
 }

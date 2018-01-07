@@ -12,17 +12,15 @@ import MapKit
 
 protocol JSMapViewDelegate: class {
     
-    
-    
     /// Media Launched successfully on the cast device
-    func mapViewSelectedLocation(coordinate: CLLocationCoordinate2D, city: String, country:String);
+    func mapViewSelectedLocation(_ coordinate: CLLocationCoordinate2D, city: String, country:String);
     
     
-    func mapViewAnnonationTap(property: Property);
+    func mapViewAnnonationTap(_ property: Property);
 }
 
 
-class JSMapView: MKMapView, MKMapViewDelegate{
+class JSMapView: MKMapView, MKMapViewDelegate {
 
     /*
     // Only override drawRect: if you perform custom drawing.
@@ -42,7 +40,7 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         self.showsUserLocation = false;
         self.delegate = self;
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(JSMapView.addCustomAnnotation(_:)))
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(addCustomAnnotation(_:)))
         longPressGesture.minimumPressDuration = 1.0
         self.addGestureRecognizer(longPressGesture)
     }
@@ -57,74 +55,72 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         }
     }
     
-    private func setCenterCoordinate(coordinate: CLLocationCoordinate2D, zoomLevel: Int, animated: Bool){
+    private func setCenterCoordinate(_ coordinate: CLLocationCoordinate2D, zoomLevel: Int, animated: Bool){
         let span = MKCoordinateSpanMake(0, 360 / pow(2, Double(zoomLevel)) * Double(self.frame.size.width) / 256)
         setRegion(MKCoordinateRegionMake(centerCoordinate, span), animated: animated)
     }
     
-    func addCustomAnnotation(gestureRecognizer:UIGestureRecognizer){
+    func addPinOnGetCityAndCountry(_ newCoordinates: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = newCoordinates
         
-        if gestureRecognizer.state == UIGestureRecognizerState.Began {
-            let touchPoint = gestureRecognizer.locationInView(self)
-            let newCoordinates = self.convertPoint(touchPoint, toCoordinateFromView: self)
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = newCoordinates
+        self.removeAnnotations(self.annotations);
+        
+        CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
+            if error != nil {
+                print("Reverse geocoder failed with error" + error!.localizedDescription)
+                return
+            }
             
-            self.removeAnnotations(self.annotations);
-
-            CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
-                if error != nil {
-                    print("Reverse geocoder failed with error" + error!.localizedDescription)
-                    return
+            var city = "";
+            var country = "";
+            
+            if placemarks!.count > 0 {
+                let placemark   = placemarks![0]
+                let addressDictionary = placemark.addressDictionary
+                
+                print(addressDictionary ?? "nil");
+                
+                if let citytemp = addressDictionary!["City"] {
+                    
+                    city = citytemp as! String;
                 }
                 
-                var city = "";
-                var country = "";
-                
-                if placemarks!.count > 0 {
-                    let placemark   = placemarks![0] 
-                    let addressDictionary = placemark.addressDictionary
+                if city == "" {
                     
-                    print(addressDictionary);
-                    
-                    if let citytemp = addressDictionary!["City"] {
-                    
-                        city = citytemp as! String;
+                    if let citytemp = addressDictionary!["FormattedAddressLines"] {
+                        
+                        let citytempArr = citytemp as! NSArray;
+                        city = citytempArr[0] as! String;
                     }
-                    
-                    if city == "" {
-                    
-                        if let citytemp = addressDictionary!["FormattedAddressLines"] {
-                            
-                            let citytempArr = citytemp as! NSArray;
-                            city = citytempArr[0] as! String;
-                        }                        
-                    }
-                    
-                    if let countryTemp = addressDictionary!["Country"]{
- 
-                        country = countryTemp as! String;
-                    }
-                    
                 }
-
-// not all places have thoroughfare & subThoroughfare so validate those values
-                    annotation.title = "Property Location"//pm.thoroughfare! + ", " + pm.subThoroughfare!
-//                    annotation.subtitle = pm.subLocality
-                    self.addAnnotation(annotation)
                 
-                
-                self.centerCoordinate = annotation.coordinate;
-                
-                self.showAnnotations(self.annotations, animated: true);
-
-                self.delegated!.mapViewSelectedLocation(self.centerCoordinate, city: city, country:country);
-                
-            })
+                if let countryTemp = addressDictionary!["Country"]{
+                    
+                    country = countryTemp as! String;
+                }
+            }
+            
+            annotation.title = "Property Location"
+            self.addAnnotation(annotation)
+            
+            self.centerCoordinate = annotation.coordinate;
+            self.showAnnotations(self.annotations, animated: true);
+            self.delegated?.mapViewSelectedLocation(self.centerCoordinate, city: city, country:country);
+            
+        })
+    }
+    
+    @objc func addCustomAnnotation(_ gestureRecognizer:UIGestureRecognizer){
+        
+        if gestureRecognizer.state == UIGestureRecognizerState.began {
+            let touchPoint = gestureRecognizer.location(in: self)
+            let newCoordinates = self.convert(touchPoint, toCoordinateFrom: self)
+            self.addPinOnGetCityAndCountry(newCoordinates)
         }
     }
 
-    func addNewPinsFromList(properties: [Property]) -> Void{
+    func addNewPinsFromList(_ properties: [Property]) -> Void{
         
         self.removeAnnotations(self.annotations);
         
@@ -145,11 +141,10 @@ class JSMapView: MKMapView, MKMapViewDelegate{
             else  {
                     title =  title + ", \(property.duration) away";
             }
-            
 
             let dropPin = CustomPointAnnotation();
-            dropPin.coordinate = CLLocationCoordinate2D(latitude: Double(property.latitude!)!, longitude: Double(property.longitude!)!);
-            dropPin.title = property.titleMsg! as String;
+            dropPin.coordinate = CLLocationCoordinate2D(latitude: Double(property.latitude)!, longitude: Double(property.longitude)!);
+            dropPin.title = property.titleMsg;
             dropPin.subtitle = title;
             dropPin.imageName = "pickup_pin";// "pickup_pin" / "dropOff_pin"
             dropPin.data = property;
@@ -160,7 +155,7 @@ class JSMapView: MKMapView, MKMapViewDelegate{
     }
 
     
-    func addUserPin() -> CLLocationCoordinate2D{
+    func addUserPin() -> CLLocationCoordinate2D {
         
         self.delegate = self
         self.showsUserLocation = false;
@@ -187,8 +182,8 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         self.showsUserLocation = false;
         // Drop a pin
         let dropPin = CustomPointAnnotation();
-        dropPin.coordinate = CLLocationCoordinate2D(latitude: Double(property.latitude!)!, longitude: Double(property.longitude!)!);
-        dropPin.title = property.titleMsg! as String;
+        dropPin.coordinate = CLLocationCoordinate2D(latitude: Double(property.latitude)!, longitude: Double(property.longitude)!);
+        dropPin.title = property.titleMsg;
         dropPin.imageName = "pickup_pin";// "pickup_pin" / "dropOff_pin"
         dropPin.data = property;
 
@@ -196,10 +191,8 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         self.centerCoordinate = dropPin.coordinate;
         
-        
         let setting = Settings.loadSettings();
         
-
         let dropPin2 = CustomPointAnnotation();
         dropPin2.coordinate = CLLocationCoordinate2D(latitude:  Double(setting.latitude)!, longitude:  Double(setting.longitude)!);
         dropPin2.title = "Your Locaiton";
@@ -208,7 +201,7 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         self.addAnnotation(dropPin2);
 
         
-        self.showRouteForPoints(dropPin2.coordinate, point2: dropPin.coordinate)
+        self.showRouteForPoints(point1: dropPin2.coordinate, point2: dropPin.coordinate)
         
 //        self.showAnnotations(self.annotations, animated: true);
 
@@ -260,18 +253,18 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         directionsRequest.source = MKMapItem(placemark: markPickUp)
         directionsRequest.destination = MKMapItem(placemark: markDropOff)
-        directionsRequest.transportType = MKDirectionsTransportType.Automobile
+        directionsRequest.transportType = MKDirectionsTransportType.automobile
         let directions = MKDirections(request: directionsRequest)
-        directions.calculateDirectionsWithCompletionHandler({ (response, error) -> Void in
+        directions.calculate(completionHandler: { (response, error) -> Void in
             
             if error == nil {
                 self.myRoute = response!.routes[0] as? MKRoute
-                self.addOverlay((self.myRoute?.polyline)!)
+                self.add((self.myRoute?.polyline)!)
             }
         })
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         if !(annotation is CustomPointAnnotation) {
             return nil
@@ -279,13 +272,13 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         let reuseId = "customPin"
         
-        var anView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
+        var anView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
         if anView == nil {
             anView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             anView!.canShowCallout = true
-            anView!.draggable = true
+            anView!.isDraggable = true
             if ( mapView.tag == 100 ) {
-                anView!.draggable = false
+                anView!.isDraggable = false
             }
         }
         else {
@@ -297,44 +290,44 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         
-        let image : UIImage = UIImage(named:"ic_black")!.imageWithRenderingMode(.AlwaysTemplate)
+        let image : UIImage = UIImage(named:"ic_black")!.withRenderingMode(.alwaysTemplate)
 
-        button.setImage(image, forState: .Normal)
+        button.setImage(image, for: .normal)
 
-        button.tintColor = UIColor.lightGrayColor()
+        button.tintColor = UIColor.lightGray
         
         anView!.rightCalloutAccessoryView = button
         
         return anView
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
-        let pinView = view.annotation as! CustomPointAnnotation;
-        
-        if let property  = pinView.data {
-            
-            self.delegated?.mapViewAnnonationTap(property);
+        if let pinView = view.annotation as? CustomPointAnnotation {
+            if let property  = pinView.data {
+                
+                self.delegated?.mapViewAnnonationTap(property);
+            }
         }
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, didChangeDragState newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
-        if (newState == MKAnnotationViewDragState.Starting) {
-            view.dragState = MKAnnotationViewDragState.Dragging
-        } else if (newState == MKAnnotationViewDragState.Ending || newState == MKAnnotationViewDragState.Canceling){
-            view.dragState = MKAnnotationViewDragState.None
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
+        if (newState == MKAnnotationViewDragState.starting) {
+            view.dragState = MKAnnotationViewDragState.dragging
+        } else if (newState == MKAnnotationViewDragState.ending || newState == MKAnnotationViewDragState.canceling){
+            view.dragState = MKAnnotationViewDragState.none
         }
     }
     
-    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         
         let lineRenderer = MKPolylineRenderer(polyline: (myRoute?.polyline)!)
-        lineRenderer.strokeColor = UIColor.blueThemeColor(); //
+        lineRenderer.strokeColor = UIColor.appTheme; //
         lineRenderer.lineWidth = 5.0
         return lineRenderer;
     }
     
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         
         
         print("zoom level " + String(self.zoomLevel));
@@ -353,7 +346,7 @@ class JSMapView: MKMapView, MKMapViewDelegate{
         
         let topCenterLocation = CLLocation(latitude: topCenterCoor.latitude, longitude: topCenterCoor.longitude)
 
-        let radius = centerLocation.distanceFromLocation(topCenterLocation);
+        let radius = centerLocation.distance(from: topCenterLocation);
             
         return ((radius)/1000.0)/2.0;
     }
@@ -365,39 +358,10 @@ class JSMapView: MKMapView, MKMapViewDelegate{
     
     func getTopCenterCoordinate() -> CLLocationCoordinate2D {
         
-        
         let size = self.frame.size.width / 2.0;
-        return self.convertPoint(CGPointMake(size, 0.0), toCoordinateFromView: self)
+        let points = CGPoint(x:size, y:0.0);
+        return self.convert(points, toCoordinateFrom: self)
     }
-    
-    
-    
-    
-//    - (CLLocationDistance)getRadius
-//    {
-//    CLLocationCoordinate2D centerCoor = [self getCenterCoordinate];
-//    // init center location from center coordinate
-//    CLLocation *centerLocation = [[CLLocation alloc] initWithLatitude:centerCoor.latitude longitude:centerCoor.longitude];
-//    CLLocationCoordinate2D topCenterCoor = [self getTopCenterCoordinate];
-//    CLLocation *topCenterLocation = [[CLLocation alloc] initWithLatitude:topCenterCoor.latitude longitude:topCenterCoor.longitude];
-//    CLLocationDistance radius = [centerLocation distanceFromLocation:topCenterCoor];
-//    return radius;
-//    }
-//    It will return the radius in metres.
-//    To get center coordinate
-//    - (CLLocationCoordinate2D)getCenterCoordinate
-//    {
-//    CLLocationCoordinate2D centerCoor = [self.mapView centerCoordinate];
-//    return centerCoor;
-//    }
-//    For getting radius, depends on where you want to get the 2nd point. Lets take the Top Center
-//    - (CLLocationCoordinate2D)getTopCenterCoordinate
-//    {
-//    // to get coordinate from CGPoint of your map
-//    CLLocationCoordinate2D topCenterCoor = [self.mapView convertPoint:CGPointMake(self.mapView.frame.size.width / 2.0f, 0) toCoordinateFromView:self.mapView];
-//    return topCenterCoor;
-//    }
-
 }
 
 class CustomPointAnnotation: MKPointAnnotation {

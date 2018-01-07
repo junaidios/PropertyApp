@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import SlideMenuControllerSwift
 
 class MapViewController: BaseViewController, JSMapViewDelegate {
 
@@ -17,16 +18,16 @@ class MapViewController: BaseViewController, JSMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.setNavigationBarItem()
+//        self.setNavigationBarItem()
         self.mapView.delegated = self;
 
         reloadData();
 
         
-        NSNotificationCenter.defaultCenter().addObserver(
+        NotificationCenter.default.addObserver(
             self,
             selector: #selector(reloadData),
-            name: "mapViewPinReloaded",
+            name: NSNotification.Name(rawValue: "mapViewPinReloaded"),
             object: nil)
     }
 
@@ -35,74 +36,111 @@ class MapViewController: BaseViewController, JSMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated);
         
     }
-
-    @IBAction func btnReloadedPressed(sender: AnyObject) {
+    
+    
+    @IBAction func btnOpenMenu(_ sender: Any) {
         
+        self.slideMenuController()?.openLeft();
+    }
+    
+
+    @IBAction func btnReloadPressed(_ sender: Any) {
         reloadData();
     }
     
     
-    func reloadData() {
+    @objc func reloadData() {
       
         let setting = Settings.loadSettings();
         
 //        let user_lat = setting.latitude;
 //        let user_lng = setting.longitude;
 //        let radius = setting.radius;
+//
+//        EstateService.searchListOfProperties( success: { (propertyList) -> Void in
+//
+//            var properties = propertyList as! [Property];
+//
+//            LocationService.getPropertyDurationsFromCurrentLocation(locations: properties, success: { (data) in
+//
+//
+//                self.mapView.addNewPinsFromList(properties);
+//
+//                _ = self.mapView.addUserPin();
+//
+//                self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+//
+//
+//                }, failure: { (error) in
+//
+//            })
+//
+//
+//            },failure: { (error) -> Void in
+//
+//            JSAlertView.show((error?.localizedDescription)!);
+//        })
         
-        
-        EstateService.searchListOfProperties( { (propertyList) -> Void in
+        EstateService.listOfProperties(success: { (propertyList) -> Void in
             
-            let properties = propertyList as! [Property];
+            SwiftSpinner.hide();
             
-            LocationService.getPropertyDurationsFromCurrentLocation(properties, success: { (data) in
+            if var properties = propertyList as? [Property] {
                 
-                
-                self.mapView.addNewPinsFromList(properties);
-                
-                self.mapView.addUserPin();
-                
-                self.mapView.showAnnotations(self.mapView.annotations, animated: true);
-                
-                
+                LocationService.getPropertyDurationsFromCurrentLocation(locations: properties, success: { (data) in
+                    
+                    if let list = data as? [(String, Int, String, Int)], list.count > 0 {
+                        for i in 0..<list.count {
+                            let tupple = list[i];
+                            let property = properties[i];
+                            property.duration = tupple.0
+                            property.durationValue = tupple.1
+                            property.distance = tupple.2
+                            property.distanceValue = tupple.3
+                        }
+                    }
+                    
+                    properties = properties.sorted{ ($0.distanceValue == 0 ? Int.max : $0.distanceValue) < ($1.distanceValue == 0 ? Int.max : $1.distanceValue) };
+
+                    self.mapView.addNewPinsFromList(properties);
+                    
+                    _ = self.mapView.addUserPin();
+                    
+                    self.mapView.showAnnotations(self.mapView.annotations, animated: true);
+                    
+
+                    
                 }, failure: { (error) in
                     
-            })
-
-          
+                })
+            }
             
-            },
-              
-        failure: { (error) -> Void in
+        }) { (error) -> Void in
             
-            JSAlertView.show((error?.localizedDescription)!);
-        })
-        
+            SwiftSpinner.hide();
+        };
     
     }
     
-    func mapViewAnnonationTap(property: Property){
+    func mapViewAnnonationTap(_ property: Property){
     
-        self.performSegueWithIdentifier("detail", sender: property);
-
+        self.performSegue(withIdentifier: "detail", sender: property);
     }
  
 
-    func mapViewSelectedLocation(coordinate: CLLocationCoordinate2D, city: String, country: String) {
+    func mapViewSelectedLocation(_ coordinate: CLLocationCoordinate2D, city: String, country: String) {
         
     }
     
-
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "detail" {
             
-            let destination = segue.destinationViewController as! DetailViewController;
+            let destination = segue.destination as! DetailViewController;
             destination.property = sender as! Property;
             
         }

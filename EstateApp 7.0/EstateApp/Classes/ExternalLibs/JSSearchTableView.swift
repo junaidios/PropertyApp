@@ -18,9 +18,9 @@ protocol JSSearchTableViewDelegate: class {
 
 extension UISearchController {
 
-    override public func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override open var preferredStatusBarStyle : UIStatusBarStyle {
         
-        return UIStatusBarStyle.LightContent;
+        return UIStatusBarStyle.lightContent;
     }
 }
 
@@ -49,13 +49,13 @@ class JSSearchTableView: UITableView, UITableViewDelegate, UITableViewDataSource
         self.delegate = self;
         self.dataSource = self;
         searchController.searchBar.layer.borderWidth = 1.0;
-        searchController.searchBar.layer.borderColor = UIColor(red: 0.42, green: 0.81, blue: 0.81, alpha: 1.0).CGColor;
-        searchController.searchBar.tintColor = UIColor.whiteColor();
+        searchController.searchBar.layer.borderColor = UIColor(red: 0.42, green: 0.81, blue: 0.81, alpha: 1.0).cgColor;
+        searchController.searchBar.tintColor = UIColor.white;
         searchController.searchBar.barTintColor = UIColor(red: 0.42, green: 0.81, blue: 0.81, alpha: 1.0);
         searchController.dimsBackgroundDuringPresentation = false;
         searchController.searchBar.delegate = self;
 //        self.setHeight(44.0);
-        self.scrollEnabled = false;
+        self.isScrollEnabled = false;
         
     }
     
@@ -77,14 +77,14 @@ class JSSearchTableView: UITableView, UITableViewDelegate, UITableViewDataSource
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return self.listOfLocations.count;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
         
 //        let loc = self.listOfLocations[indexPath.row] as! Location;
         
@@ -93,11 +93,11 @@ class JSSearchTableView: UITableView, UITableViewDelegate, UITableViewDataSource
         return cell;
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         searchController.searchBar.resignFirstResponder();
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true);
         
 //        let loc = self.listOfLocations[indexPath.row] as! Location;
 //        
@@ -142,14 +142,14 @@ class JSSearchTableView: UITableView, UITableViewDelegate, UITableViewDataSource
 //        }
     }
 
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        filterContentForSearchText(searchBar.text!);
+        filterContentForSearchText(searchText: searchBar.text!);
     }
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
-        self.setHeight(44.0);
-        self.scrollEnabled = false;
+        self.setHeight(height: 44.0);
+        self.isScrollEnabled = false;
         //self.view.frame.size.height;
     }
     

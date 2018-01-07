@@ -27,12 +27,12 @@ class KeyboardListView: UIView, UIPickerViewDataSource, UIPickerViewDelegate{
         }
     }
     
-    class func loadWithNib(textField: UITextField, options: [String], color : Bool) -> KeyboardListView{
+    class func loadWithNib(_ textField: UITextField, options: [String], color : Bool) -> KeyboardListView{
         
-        let view: KeyboardListView = NSBundle.mainBundle().loadNibNamed("KeyboardListView",
+        let view: KeyboardListView = Bundle.main.loadNibNamed("KeyboardListView",
             owner: self, options: nil)![0] as! KeyboardListView
         
-        view.frame = UIScreen.mainScreen().bounds
+        view.frame = UIScreen.main.bounds
         
         view.tfTextField = textField;
         
@@ -42,86 +42,92 @@ class KeyboardListView: UIView, UIPickerViewDataSource, UIPickerViewDelegate{
 
         view.frame = CGRect(x: view.frame.origin.x, y: view.frame.origin.y, width: view.frame.size.width, height: 216.0);
         
-        textField.backgroundColor = UIColor.redColor();
-        
-        
-        view.color = color;
-        
-        if color {
+        if options.count >= 10 {
             
-            let row = 10 - Int(textField.text!)!
+            textField.backgroundColor = UIColor.red
+
+            view.color = color;
             
-            if row > 3 && row <= 7 {
-                textField.backgroundColor = UIColor.orangeColor();
-            }
-            if row > 7 && row <= 10 {
+            if color {
                 
-                textField.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
+                let row = 10 - Int(textField.text!)!
+                
+                if row > 3 && row <= 7 {
+                    textField.backgroundColor = UIColor.orange
+                }
+                if row > 7 && row <= 10 {
+                    
+                    textField.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
+                }
+                
             }
- 
+            
+            
         }
        
         
         return view;
     }
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int
-    {
-    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1;
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
         return listOfOptions.count;
     }
     
     
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         
         let cityName = listOfOptions[row];
         
-        var lblTitle = NSAttributedString(string: cityName, attributes: [NSFontAttributeName:UIFont.boldSystemFontOfSize(10),NSForegroundColorAttributeName:UIColor.redColor()]);
+        var lblTitle = NSAttributedString(string: cityName, attributes: [NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 10),NSAttributedStringKey.foregroundColor:UIColor.red]);
         
-        if color {
+        if listOfOptions.count >= 10 {
             
-            if row > 3 && row <= 7 {
-                lblTitle = NSAttributedString(string: cityName, attributes: [NSFontAttributeName:UIFont.boldSystemFontOfSize(10),NSForegroundColorAttributeName:UIColor.orangeColor()])
-            }
-            if row > 7 && row <= 10 {
-                lblTitle = NSAttributedString(string: cityName, attributes: [NSFontAttributeName:UIFont.boldSystemFontOfSize(10),NSForegroundColorAttributeName:UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0)])
+            if color {
+                
+                if row > 3 && row <= 7 {
+                    lblTitle = NSAttributedString(string: cityName, attributes: [NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 10),NSAttributedStringKey.foregroundColor:UIColor.orange])
+                }
+                if row > 7 && row <= 10 {
+                    lblTitle = NSAttributedString(string: cityName, attributes: [NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 10),NSAttributedStringKey.foregroundColor:UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0)])
+                }
             }
         }
         
         return lblTitle
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         let cityName = listOfOptions[row];
         
 //        let cityName = cityData["human_city_name"] as! String;
-        
-        if color {
+        if listOfOptions.count >= 10 {
             
-            
-            tfTextField.backgroundColor = UIColor.redColor();
-            
-            if row > 3 && row <= 7 {
-                tfTextField.backgroundColor = UIColor.orangeColor();
-            }
-            if row > 7 && row <= 10 {
+            if color {
                 
-                tfTextField.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
+                tfTextField.backgroundColor = UIColor.red;
+                
+                if row > 3 && row <= 7 {
+                    tfTextField.backgroundColor = UIColor.orange;
+                }
+                if row > 7 && row <= 10 {
+                    
+                    tfTextField.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
+                }
+                
             }
-            
         }
         
         tfTextField.text = cityName;
         
     }
     
-    @IBAction func btnHidePressed(sender: AnyObject) {
+    @IBAction func btnHidePressed(_ sender: AnyObject) {
         
         tfTextField.resignFirstResponder();
     }

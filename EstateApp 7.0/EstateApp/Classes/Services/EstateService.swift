@@ -11,13 +11,12 @@ import UIKit
 class EstateService: BaseService {
    
     
-    class func savePropertyWhere(title
-                                title:String, size:String, type:String, demand:String, condition:String,
+    class func savePropertyWhere(title:String, size:String, type:String, demand:String, condition:String,
                                 latitude:String, longitude:String, city:String, country:String, description:String,
                                 specialNote:String, rooms:String, baths:String, kitchen:String,
                                 ownerName:String, ownerNumber:String, ownerAddress:String, ownerEmail:String,
                                 img1:UIImage?, img2:UIImage?, img3:UIImage?,
-                                success:successBlock, failure:failureBlock)
+                                success:@escaping successBlock, failure:@escaping failureBlock)
     {
         
         var params =
@@ -44,43 +43,43 @@ class EstateService: BaseService {
         ];
         
         
-        if let imgTemp = img1 {
-            
-            let imgStr = imgTemp.toBase64()
-            params["img1"] = imgStr;
-        }
-        
-        if let imgTemp = img2 {
-            let imgStr = imgTemp.toBase64()
-            params["img2"] = imgStr;
-        }
-        
-        if let imgTemp = img3 {
-            let imgStr = imgTemp.toBase64()
-            params["img3"] = imgStr;
-        }
-        
+//        if let imgTemp = img1 {
+//
+//            let imgStr = imgTemp.toBase64()
+//            params["img1"] = imgStr;
+//        }
+//
+//        if let imgTemp = img2 {
+//            let imgStr = imgTemp.toBase64()
+//            params["img2"] = imgStr;
+//        }
+//
+//        if let imgTemp = img3 {
+//            let imgStr = imgTemp.toBase64()
+//            params["img3"] = imgStr;
+//        }
+//
         
                                     
         NetworkManager.postWithURI("add_property.php",  params:params, success: { (data) -> Void in
             
-            print(data);
+            print(data ?? "nil");
 
-            success(data: data);
+            success(data as AnyObject);
             
             })
             { (error) -> Void in
                 
 //                JSAlertView.show((error?.localizedDescription)!);
 
-                print(error?.localizedDescription);
-                failure(error: error);
+                print(error?.localizedDescription ?? "nil");
+                failure(error);
                 
         }
     }
     
     
-    class func listOfProperties(success:successBlock, failure:failureBlock){
+    class func listOfProperties(success:@escaping successBlock, failure:failureBlock){
         
         let setting = Settings.loadSettings();
         
@@ -92,33 +91,30 @@ class EstateService: BaseService {
         
         NetworkManager.postWithURI("Locations.php?action=all", params:params, success: { (data) -> Void in
             
-            
-            let propertyList : NSMutableArray = NSMutableArray();
-            let dataList : NSArray = data as! NSArray
-            
-            
-            for obj in dataList {
+            var propertyList  = [Property]();
+            if let dataList = data as? [[String: Any]] {
                 
-                let property = Property();
-                property.mapPropertyUsing(obj as! NSDictionary);
-                property.distance = obj["distance"] as! String;
-                propertyList.addObject(property);
+                for obj in dataList {
+                    
+                    let property = Property();
+                    property.mapPropertyUsing(data: obj);
+                    property.distance = obj["distance"] as! String;
+                    propertyList.append(property);
+                    
+                }
                 
             }
+            success(propertyList as AnyObject);
             
-            success(data: propertyList);
+        })
+        { (error) -> Void in
             
-            })
-            { (error) -> Void in
-                
-                
-                print(error?.localizedDescription);
-                
+            print(error?.localizedDescription);
         }
     }
     
     
-    class func listOfPropertiesForMaps(latitude:String, longitude:String, ulatitude:String, ulongitude:String, radius:String, success:successBlock, failure:failureBlock){
+    class func listOfPropertiesForMaps(latitude:String, longitude:String, ulatitude:String, ulongitude:String, radius:String, success:@escaping successBlock, failure:failureBlock){
         
         let params =
         [
@@ -131,70 +127,69 @@ class EstateService: BaseService {
         
         NetworkManager.postWithURI("Locations.php?action=map", params:params, success: { (data) -> Void in
             
-            
-            let propertyList : NSMutableArray = NSMutableArray();
-            let dataList : NSArray = data as! NSArray
-            
-            
-            for obj in dataList {
+            var propertyList  = [Property]();
+            if let dataList = data as? [[String: Any]] {
                 
-                let property = Property();
-                property.mapPropertyUsing(obj as! NSDictionary);
-                property.distance = obj["user_distance"] as! String;
-                propertyList.addObject(property);
+                for obj in dataList {
+                    
+                    let property = Property();
+                    property.mapPropertyUsing(data: obj);
+                    property.distance = obj["distance"] as! String;
+                    propertyList.append(property);
+                    
+                }
+                
             }
+            success(propertyList as AnyObject);
             
-            success(data: propertyList);
+        })
+        { (error) -> Void in
             
-            })
-            { (error) -> Void in
-                
-                
-                print(error?.localizedDescription);
-                
+            print(error?.localizedDescription);
         }
     }
     
     
-    class func searchListOfProperties(success:successBlock, failure:failureBlock){
+    class func searchListOfProperties(success:@escaping successBlock, failure:failureBlock){
         
         let setting = Settings.loadSettings();
+        
+        let minValue = Int(setting.minPrice) ?? 0;
+        let maxValue = Int(setting.maxPrice) ?? 0;
         
         let params =
         [
             "lat": setting.latitude,
             "lng": setting.longitude,
-            "radius": setting.radius,
+            "radius": 1000,
             "rooms": setting.rooms,
             "baths": setting.baths,
-            "min_price": setting.minPrice,
-            "max_price": setting.maxPrice
-        ];
+            "min_price": Double(minValue) * 10000,
+            "max_price": Double(maxValue) * 10000
+            ] as [String : Any];
         
         
         NetworkManager.postWithURI("Locations.php?action=search", params:params,  success: { (data) -> Void in
             
-            let propertyList : NSMutableArray = NSMutableArray();
-            let dataList : NSArray = data as! NSArray
-            
-            for obj in dataList {
+            var propertyList  = [Property]();
+            if let dataList = data as? [[String: Any]] {
                 
-                let property = Property();
-                property.mapPropertyUsing(obj as! NSDictionary);
-                property.distance = obj["distance"] as! String;
-                propertyList.addObject(property);
+                for obj in dataList {
+                    
+                    let property = Property();
+                    property.mapPropertyUsing(data: obj);
+                    property.distance = obj["distance"] as! String;
+                    propertyList.append(property);
+                    
+                }
                 
             }
+            success(propertyList as AnyObject);
             
-            success(data: propertyList);
+        })
+        { (error) -> Void in
             
-            })
-            { (error) -> Void in
-                
-                
-                
-                print(error?.localizedDescription);
-                
+            print(error?.localizedDescription);
         }
     }
 }

@@ -11,7 +11,7 @@ class PropertyCell: UITableViewCell
 {
 
     @IBOutlet weak var lblTitle: UILabel!
-    @IBOutlet weak var imgView: AsyncImageView!
+    @IBOutlet weak var imgView: UIImageView!
     @IBOutlet weak var lblSize: UILabel!
     @IBOutlet weak var lblDemand: UILabel!
     @IBOutlet weak var lblDistance: UILabel!

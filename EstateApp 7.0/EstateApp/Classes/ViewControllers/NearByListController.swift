@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 class NearByListController: BaseViewController , UITableViewDataSource, UITableViewDelegate {
    
-    var properties = NSMutableArray();
+    var properties = [Property]();
     
     @IBOutlet weak var tblView: UITableView!
     @IBOutlet weak var segmentCtrl: UISegmentedControl!
@@ -18,6 +18,9 @@ class NearByListController: BaseViewController , UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        tblView.estimatedRowHeight = 97;
+        tblView.rowHeight = UITableViewAutomaticDimension;
         
         self.segmentCtrlValueChanged(segmentCtrl);
         
@@ -29,103 +32,137 @@ class NearByListController: BaseViewController , UITableViewDataSource, UITableV
     }
     
     
-    @IBAction func segmentCtrlValueChanged(sender: UISegmentedControl) {
+    @IBAction func segmentCtrlValueChanged(_ sender: UISegmentedControl) {
+            
+        SwiftSpinner.show("Loading...")
         
-        self.view.showLoading();
-        
-        self.properties.removeAllObjects();
+        self.properties.removeAll();
         
         if (segmentCtrl.selectedSegmentIndex == 0)
         {
-            EstateService.listOfProperties({ (propertyList) -> Void in
+            EstateService.listOfProperties(success: { (propertyList) -> Void in
                 
-                self.view.hideLoading();
-                
-                self.properties.addObjectsFromArray(propertyList as! [AnyObject]);
-                self.tblView.reloadData();
+                SwiftSpinner.hide();
+
+                if var properties = propertyList as? [Property] {
+                    
+                    LocationService.getPropertyDurationsFromCurrentLocation(locations: properties, success: { (data) in
+                        
+                        if let list = data as? [(String, Int, String, Int)], list.count > 0 {
+                            for i in 0..<list.count {
+                                let tupple = list[i];
+                                let property = properties[i];
+                                property.duration = tupple.0
+                                property.durationValue = tupple.1
+                                property.distance = tupple.2
+                                property.distanceValue = tupple.3
+                            }
+                        }
+                        
+                        self.properties = properties.sorted{ ($0.distanceValue == 0 ? Int.max : $0.distanceValue) < ($1.distanceValue == 0 ? Int.max : $1.distanceValue) };
+                        self.tblView.reloadData();
+                        
+                    }, failure: { (error) in
+                        
+                    })
+                }
                 
                 }) { (error) -> Void in
                    
-                    self.view.hideLoading();
-
+                    SwiftSpinner.hide();
             };
         }
         else if (segmentCtrl.selectedSegmentIndex == 1)
         {
-            EstateService.searchListOfProperties({ (propertyList) -> Void in
+            EstateService.searchListOfProperties(success: { (propertyList) -> Void in
                 
-                self.view.hideLoading();
+                SwiftSpinner.hide();
                 
-                
-                LocationService.getPropertyDurationsFromCurrentLocation(propertyList as! [Property], success: { (data) in
+                if let properties = propertyList as? [Property] {
                     
-                    self.properties.addObjectsFromArray(propertyList as! [AnyObject]);
-                    self.tblView.reloadData();
-                    
+                    LocationService.getPropertyDurationsFromCurrentLocation(locations: properties, success: { (data) in
+                        
+                        if let list = data as? [(String, Int, String, Int)], list.count > 0 {
+                            for i in 0..<list.count {
+                                let tupple = list[i];
+                                let property = properties[i];
+                                property.duration = tupple.0
+                                property.durationValue = tupple.1
+                                property.distance = tupple.2
+                                property.distanceValue = tupple.3
+                            }
+                        }
+
+                        self.properties = properties.sorted{ $0.distanceValue < $1.distanceValue };
+                        self.tblView.reloadData();
+                        
                     }, failure: { (error) in
                         
-                })
+                    })
+                }
                 
             }) { (error) -> Void in
                 
-                self.view.hideLoading();
-                
+                SwiftSpinner.hide();
             };
         }
     }
     
-    @IBAction func btnMapViewPressed(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil);
+    @IBAction func btnMapViewPressed(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil);
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return properties.count;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! PropertyCell;
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! PropertyCell;
         
-        let property = properties.objectAtIndex(indexPath.row) as! Property;
-        
-        var title = "";
-        
-        if property.distance.length > 0 {
-            title = property.distance;
-        }
-        if title.length == 0 {
-            title = property.duration + "away";
-        }
-        else  {
-            title =  title + ", \(property.duration) away";
-        }
+        if properties.count > indexPath.row {
+            let property = properties[indexPath.row];
+            
+            cell.lblDistance.text = "";
+            
+            if property.duration.length > 0 {
+                cell.lblDistance.text = property.duration;
+            }
+            if property.distance.length > 0 {
+                if  cell.lblDistance.text!.length == 0 {
+                    cell.lblDistance.text = property.distance;
+                }
+                else {
+                    cell.lblDistance.text = cell.lblDistance.text! + ", " + property.distance;
+                }
+            }
 
-        
-        cell.lblTitle.text = property.titleMsg;
-        cell.lblSize.text = property.size! + " ft2";
-        cell.lblDistance.text = "Distance: " + title //+ ", City: " + property.city!;
-        cell.lblDemand.text = property.demand?.getCurrencyFormat();
-        cell.imgView.setURL(NSURL(string: property.photo!), placeholderImage: UIImage(named: "imagePP"))
+            cell.lblTitle.text = property.titleMsg;
+            cell.lblSize.text = property.size + " ft2";
+            cell.lblDemand.text = "$" + property.demand.toNumber;
+            cell.imgView.setImageWithURI(property.photo)
+            cell.imgView.cornerRadius(4);
+        }
         
         return cell;
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let property = properties.objectAtIndex(indexPath.row) as! Property;
+        let property = properties[indexPath.row];
 
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true);
         
-        self.performSegueWithIdentifier("detail", sender: property);
+        self.performSegue(withIdentifier: "detail", sender: property);
     }
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "detail" {
         
-            let destination = segue.destinationViewController as! DetailViewController;
+            let destination = segue.destination as! DetailViewController;
             destination.property = sender as! Property;
         
         }

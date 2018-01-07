@@ -13,16 +13,16 @@ extension UIColor {
     convenience init(hex: String) {
         self.init(hex: hex, alpha:1)
     }
-
+    
     convenience init(hex: String, alpha: CGFloat) {
         var hexWithoutSymbol = hex
         if hexWithoutSymbol.hasPrefix("#") {
-            hexWithoutSymbol = hex.substring(1)
+            hexWithoutSymbol = hex.replacingOccurrences(of: "#", with: "");
         }
         
-        let scanner = NSScanner(string: hexWithoutSymbol)
+        let scanner = Scanner(string: hexWithoutSymbol)
         var hexInt:UInt32 = 0x0
-        scanner.scanHexInt(&hexInt)
+        scanner.scanHexInt32(&hexInt)
         
         var r:UInt32!, g:UInt32!, b:UInt32!
         switch (hexWithoutSymbol.length) {
@@ -48,13 +48,15 @@ extension UIColor {
             alpha:alpha)
     }
     
-    class func frozieColor() -> UIColor {
-        
-        return UIColor(red: 0.42, green: 0.81, blue: 0.81, alpha: 1.0);
+    
+    static var appTheme : UIColor {
+        return UIColor(hex: "#449534");
     }
     
-    class func blueThemeColor() -> UIColor {
-        
+    static var frozie : UIColor {
+        return UIColor(red: 0.42, green: 0.81, blue: 0.81, alpha: 1.0);
+    }
+    static var blueTheme : UIColor {
         return UIColor(hex: "#52B1E1");
     }
     

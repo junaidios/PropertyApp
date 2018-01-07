@@ -8,14 +8,11 @@
 
 import UIKit
 import MapKit
+import GooglePlaces
+import WARangeSlider
 
-
-
-
-class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
+class SettingControlView: BaseViewController, UITextFieldDelegate
 {
-    
-    
     @IBOutlet weak var lblLatitude: UILabel!
     @IBOutlet weak var lblLongitude: UILabel!
     
@@ -24,7 +21,7 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
     @IBOutlet weak var lblPrice: UILabel!
     @IBOutlet weak var lblRadius: UILabel!
     
-    @IBOutlet weak var txtFieldLocation: AutoCompleteTextField!
+    @IBOutlet weak var txtFieldLocation: JSTextField!
 
     @IBOutlet weak var btnSearch: UIButton!
     
@@ -39,47 +36,20 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
     @IBOutlet weak var pricePriority: JSTextField!
     
     @IBOutlet weak var switchBtnLocation: UISwitch!
-    @IBOutlet weak var priceSliderContainer: UIView!
+    @IBOutlet weak var priceSliderContainer: RangeSlider!
     
 
-    let priceRangeSlider = RangeSlider(frame: CGRectZero)
-    
-    
-    func priceRangeSliderValueChanged(rangeSlider: RangeSlider){
-        
-        
-        var val = Double(rangeSlider.lowerValue)
-        var rounded = val % 5000;
-        
-        let minRange = val - rounded;
-        
-        val = Double(rangeSlider.upperValue)
-        rounded = val % 5000;
-        
-        let maxRange = val - rounded;
-       
-        
-        lblPrice.text = minRange.getCurrencyFormat() + " - " + maxRange.getCurrencyFormat();
-        
-        print("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
-    }
-    
     var isOpen = false
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-//        if segue.identifier == "AddTagMetaController" {
-        
-            //            self.btnDone.hidden = true
-            
-            
-            let popoverViewController = segue.destinationViewController
-            popoverViewController.modalPresentationStyle = UIModalPresentationStyle.Popover
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+ 
+        let popoverViewController = segue.destination
+        popoverViewController.modalPresentationStyle = UIModalPresentationStyle.popover
         
             self.definesPresentationContext = true; //self is presenting view controller
             
             popoverViewController.popoverPresentationController?.backgroundColor = UIColor(white: 1.0, alpha: 0.85);
-            popoverViewController.popoverPresentationController?.permittedArrowDirections = .Any
+        popoverViewController.popoverPresentationController?.permittedArrowDirections = .any
             if #available(iOS 9.0, *) {
                 popoverViewController.popoverPresentationController?.canOverlapSourceViewRect = true
                 
@@ -87,51 +57,50 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
                 // Fallback on earlier versions
             }
             
-            popoverViewController.popoverPresentationController?.permittedArrowDirections = .Any
+        popoverViewController.popoverPresentationController?.permittedArrowDirections = .any
             popoverViewController.preferredContentSize = CGSize(width: 200, height: 60)
             
            
 //        }
     }
 
-    @IBAction func btnToSwitchOnOffCustomLocation(switchBtn: UISwitch) {
+    @IBAction func btnToSwitchOnOffCustomLocation(_ switchBtn: UISwitch) {
         
-        if switchBtn.on
+        if switchBtn.isOn
         {
-            txtFieldLocation.enabled = true;
+            txtFieldLocation.isEnabled = true;
         }
         else
         {
-            txtFieldLocation.enabled = false;
+            txtFieldLocation.isEnabled = false;
             self.loadUserLocation();
         }
     }
     
     
-    @IBAction func btnSavePressed(sender: AnyObject) {
+    @IBAction func btnSavePressed(_ sender: AnyObject) {
      
         let setting = Settings.loadSettings();
         
-        setting.latitude = lblLatitude.text!;
-        setting.longitude = lblLongitude.text!;
         setting.rooms = lblRooms.text!;
         setting.baths = lblBaths.text!;
         setting.radius = String(Int(sliderRadius.value));
-        setting.minPrice =  String(Int(priceRangeSlider.lowerValue));
-        setting.maxPrice =  String(Int(priceRangeSlider.upperValue));
+        setting.minPrice =  String(Int(priceSliderContainer.lowerValue));
+        setting.maxPrice =  String(Int(priceSliderContainer.upperValue));
+
+        setting.latitude = lblLatitude.text!;
+        setting.longitude = lblLongitude.text!;
         setting.locationName = txtFieldLocation.text!;
-        setting.isCustomLocation = switchBtnLocation.on;
+//        setting.isCustomLocation = switchBtnLocation.isOn;
         
         setting.roomsPriority = roomsPriority.text!;
         setting.bathsPriority = bathsPriority.text!;
         setting.pricePriority = pricePriority.text!;
         setting.radiusPriority = radiusPriority.text!;
         
-        
-        
         setting.saveSettings();
         
-        NSNotificationCenter.defaultCenter().postNotificationName("mapViewPinReloaded", object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "mapViewPinReloaded"), object: nil)
 
         self.toggleLeft();
     
@@ -140,40 +109,36 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
 
     func setupPriceRangeSlider()
     {
-        priceSliderContainer.addSubview(self.priceRangeSlider)
-
-        self.priceRangeSlider.addTarget(self, action: #selector(SettingControlView.priceRangeSliderValueChanged(_:)), forControlEvents: .ValueChanged)
-        self.priceRangeSlider.trackHeighlightTintColor = UIColor(hex: "#52B1E1");
-        self.priceRangeSlider.curvaceousness = 1.0
-        self.priceRangeSlider.frame = priceSliderContainer.bounds
+        self.priceSliderContainer.trackHighlightTintColor = UIColor(hex: "#227F00");
+        self.priceSliderContainer.curvaceousness = 1.0
     }
     
     func loadUserLocation(){
         
-        if (switchBtnLocation.on == false)
-        {
-            LocationManager.sharedInstance.getUserCurrentLocation(GPSDataType.GPSDataTypeLatLong, completion: { (data) -> () in
-                
-                let location = data as! CLLocation;
-                self.lblLatitude.text = String(location.coordinate.latitude.roundToPlaces(6));
-                self.lblLongitude.text = String(location.coordinate.longitude.roundToPlaces(6));
-                
-                LocationManager.sharedInstance.getAddressFromLocation(location, completion: { (data) -> () in
-                    
-                    self.txtFieldLocation.text = data as? String;
-                });
-                
-            })
-        }
+//        if (switchBtnLocation.isOn == false)
+//        {
+//            JSLocationManager.sharedInstance.getUserCurrentLocation(.coordinate, completion: { (data) -> () in
+//
+//                let location = data as! CLLocation;
+//                self.lblLatitude.text = "\(location.coordinate.latitude)";
+//                self.lblLongitude.text = "\(location.coordinate.longitude)";
+//
+//                JSLocationManager.sharedInstance.getAddressFromLocation(location, completion: { (data) -> () in
+//
+//                    self.txtFieldLocation.text = data as? String;
+//                });
+//
+//            })
+//        }
     }
     
-    @IBAction func sliderPriceValueChanged(slider: UISlider) {
+    @IBAction func sliderPriceValueChanged(_ slider: UISlider) {
         
         let value = Int(slider.value)
         lblPrice.text = String(value);
     }
     
-    @IBAction func sliderRoomsValueChanged(slider: UISlider) {
+    @IBAction func sliderRoomsValueChanged(_ slider: UISlider) {
         
         let value = Int(slider.value)
         if value == 0 {
@@ -184,13 +149,13 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
         }
     }
     
-    @IBAction func sliderRadiusChangeValue(slider: UISlider) {
+    @IBAction func sliderRadiusChangeValue(_ slider: UISlider) {
         
         let value = Int(slider.value)
         lblRadius.text = String(value) + "km";
     }
     
-    @IBAction func sliderBathValueChanged(slider: UISlider) {
+    @IBAction func sliderBathValueChanged(_ slider: UISlider) {
         
         let value = Int(slider.value)
         if value == 0 {
@@ -206,15 +171,14 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
         
         self.loadUserLocation();
         self.setupPriceRangeSlider();
-        self.txtFieldLocation.mDelegate = self;
-
+        self.txtFieldLocation.delegate = self;
+        self.txtFieldLocation.isEnabled = true;
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated);
         
         let setting = Settings.loadSettings();
-        
         
         roomsPriority.text = setting.roomsPriority;
         bathsPriority.text = setting.bathsPriority;
@@ -229,7 +193,20 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
         lblRooms.text = setting.rooms;
         lblBaths.text = setting.baths;
         lblRadius.text = setting.radius  + "km";
-        lblPrice.text = Double(setting.minPrice)!.getCurrencyFormat() + " - " + Double(setting.maxPrice)!.getCurrencyFormat();
+        txtFieldLocation.text = setting.locationName;
+        lblLatitude.text = setting.latitude;
+        lblLongitude.text = setting.longitude;
+        
+        let minValue = Int(setting.minPrice) ?? 0;
+        let maxValue = Int(setting.maxPrice) ?? 0;
+
+        priceSliderContainer.lowerValue = Double(minValue)
+        priceSliderContainer.upperValue = Double(maxValue)
+        
+        let minRate = "\(minValue * 10000)";
+        let maxRate = "\(maxValue * 10000)";
+        
+        lblPrice.text = minRate.toCurrency + " - " + maxRate.toCurrency
         
         if lblRooms.text == "Any"{
             sliderRooms.value = 0
@@ -241,29 +218,17 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
         if lblBaths.text == "Any"{
             sliderBaths.value = 0
         }
-        else{
+        else {
             sliderBaths.value = Float(lblBaths.text!)!;
         }
         
         sliderRadius.value = Float(setting.radius)!;
 
-        switchBtnLocation.on = setting.isCustomLocation;
-        
-        if switchBtnLocation.on {
-            lblLatitude.text = setting.latitude;
-            lblLongitude.text = setting.longitude;
-            txtFieldLocation.text = setting.locationName;
-            txtFieldLocation.enabled = true;
-        }
-        else {
-            self.loadUserLocation();
-        }
-        priceRangeSlider.lowerValue = Double(setting.minPrice)!;
-        priceRangeSlider.upperValue = Double(setting.maxPrice)!;
+        self.loadUserLocation();
         
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
@@ -271,11 +236,66 @@ class SettingControlView: BaseViewController, AutoCompleteTextFieldDelegate
         super.viewDidLayoutSubviews()
     }
     
-    func textFieldDidEndEditingWithLocation(location: Location) {
-        
-        self.lblLatitude.text =  location.latitude;
-        self.lblLongitude.text =  location.longitude;
-        
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
 
+        if textField == txtFieldLocation {
+            let autocompleteController = GMSAutocompleteViewController()
+            autocompleteController.delegate = self
+            present(autocompleteController, animated: true, completion: nil)
+        }
+        return false;
+    }
+    
+    
+    @IBAction func priceRangeUpdated(_ rangeSlider: RangeSlider) {
+
+        let minRate = "\(Int(rangeSlider.lowerValue) * 10000)";
+        let maxRate = "\(Int(rangeSlider.upperValue) * 10000)";
+        
+        lblPrice.text = minRate.toCurrency + " - " + maxRate.toCurrency
+        
+        print("Range slider value changed: (\(rangeSlider.lowerValue) \(rangeSlider.upperValue))")
+
+    }
+}
+
+extension SettingControlView: GMSAutocompleteViewControllerDelegate {
+    
+    // Handle the user's selection.
+    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        
+        let setting = Settings.loadSettings();
+
+        self.txtFieldLocation.text = place.name;
+        self.lblLatitude.text = "\(place.coordinate.latitude)";
+        self.lblLongitude.text = "\(place.coordinate.longitude)";
+
+        setting.latitude = lblLatitude.text!;
+        setting.longitude = lblLongitude.text!;
+        setting.locationName = txtFieldLocation.text!;
+
+        setting.saveSettings();
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+        // TODO: handle the error.
+        print("Error: ", error.localizedDescription)
+    }
+    
+    // User canceled the operation.
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // Turn the network activity indicator on and off again.
+    func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    }
+    
+    func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
 }

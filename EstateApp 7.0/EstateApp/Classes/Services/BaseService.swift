@@ -9,8 +9,8 @@
 import UIKit
 
 
-typealias successBlock = (data: AnyObject?) -> Void
-typealias failureBlock = (error: NSError?)   -> Void
+typealias successBlock = (_ data: AnyObject?) -> Void
+typealias failureBlock = (_ error: NSError?)   -> Void
 
 class BaseService: NSObject {
    

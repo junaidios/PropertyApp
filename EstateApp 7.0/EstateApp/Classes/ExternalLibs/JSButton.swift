@@ -18,10 +18,9 @@ class JSButton: UIButton {
         // Drawing code
     }
     */
-    
+
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
+        super.init(coder: aDecoder);
         
     }
     
@@ -34,10 +33,10 @@ class JSButton: UIButton {
 //        }
 //    }
 
-    @objc override var highlighted: Bool {
+    @objc override var isHighlighted: Bool {
         didSet {
             
-            if highlighted {
+            if isHighlighted {
 
                 self.touchDownAnimation();
             } else {
@@ -49,14 +48,14 @@ class JSButton: UIButton {
     
     func touchDownAnimation() {
     
-        UIView.animateWithDuration(0.1, animations: { () -> Void in
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
         self.layer.transform = CATransform3DMakeScale(0.90, 0.90, 0.90);
 
         })
     }
     
     func touchUpAnimation() {
-        UIView.animateWithDuration(0.1, animations: { () -> Void in
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
             self.layer.transform = CATransform3DIdentity;
             
         })

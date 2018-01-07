@@ -20,22 +20,20 @@ class Location: BaseEntity {
     var durations :String = ""
     
     
-    func mapLocationUsing(data: NSDictionary) -> Location{
+    func mapLocationUsing(data: [String: Any]) {
         
         self.locId = data["id"] as? String;
         self.placeId = data["place_id"] as? String;
         self.titleMsg = data["description"] as? String;
-        
-        return self;
     }
     
-    func mapLocationDetailsUsing(data: NSDictionary) -> Location{
+    func mapLocationDetailsUsing(data: [String: Any]) -> Location {
         
         self.locId = data["id"] as? String;
         self.placeId = data["place_id"] as? String;
         self.titleMsg = data["name"] as? String;
-        let geometry = data["geometry"] as! NSDictionary;
-        let location = geometry["location"] as! NSDictionary;
+        let geometry = data["geometry"] as! [String: Any];
+        let location = geometry["location"] as! [String: Any];
         
         let latInNumber = location["lat"] as! NSNumber;
         let lngInNumber = location["lng"] as! NSNumber;

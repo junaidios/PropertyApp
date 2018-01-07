@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Settings: BaseEntity {
+class Settings: BaseEntity, NSCoding { 
  
     var isCustomLocation : Bool = false
     var latitude : String = ""
@@ -21,7 +21,6 @@ class Settings: BaseEntity {
     var minPrice : String = ""
     var maxPrice : String = ""
     
-    
     var radiusPriority: String = "10"
     var pricePriority : String = "10"
     var roomsPriority : String = "10"
@@ -31,52 +30,49 @@ class Settings: BaseEntity {
         super.init()
     }
     
-    
-    func encodeWithCoder(aCoder: NSCoder!) {
+    func encode(with aCoder: NSCoder) {
+
+        aCoder.encode(isCustomLocation, forKey:"isCustomLocation")
+        aCoder.encode(latitude,         forKey:"latitude")
+        aCoder.encode(longitude,        forKey:"longitude")
+        aCoder.encode(radius,           forKey:"radius")
+        aCoder.encode(locationName,     forKey:"locationName")
+        aCoder.encode(rooms,            forKey:"rooms")
+        aCoder.encode(baths,            forKey:"baths")
+        aCoder.encode(minPrice,         forKey:"minPrice")
+        aCoder.encode(maxPrice,         forKey:"maxPrice")
         
-        aCoder.encodeBool(isCustomLocation,    forKey:"isCustomLocation")
-        aCoder.encodeObject(latitude,          forKey:"latitude")
-        aCoder.encodeObject(longitude,         forKey:"longitude")
-        aCoder.encodeObject(radius,            forKey:"radius")
-        aCoder.encodeObject(locationName,      forKey:"locationName")
-        aCoder.encodeObject(rooms,             forKey:"rooms")
-        aCoder.encodeObject(baths,             forKey:"baths")
-        aCoder.encodeObject(minPrice,          forKey:"minPrice")
-        aCoder.encodeObject(maxPrice,          forKey:"maxPrice")
-        
-        aCoder.encodeObject(radiusPriority,         forKey:"radiusPriority")
-        aCoder.encodeObject(pricePriority,          forKey:"pricePriority")
-        aCoder.encodeObject(roomsPriority,          forKey:"roomsPriority")
-        aCoder.encodeObject(bathsPriority,          forKey:"bathsPriority")
+        aCoder.encode(radiusPriority,   forKey:"radiusPriority")
+        aCoder.encode(pricePriority,    forKey:"pricePriority")
+        aCoder.encode(roomsPriority,    forKey:"roomsPriority")
+        aCoder.encode(bathsPriority,    forKey:"bathsPriority")
     }
     
-    
-    init(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder) {
         
         super.init()
         
-        self.isCustomLocation   = aDecoder.decodeBoolForKey("isCustomLocation") ;
-        self.latitude           = aDecoder.decodeObjectForKey("latitude") as! String;
-        self.longitude          = aDecoder.decodeObjectForKey("longitude") as! String;
-        self.radius             = aDecoder.decodeObjectForKey("radius") as! String;
-        self.locationName       = aDecoder.decodeObjectForKey("locationName") as! String;
-        self.rooms              = aDecoder.decodeObjectForKey("rooms") as! String;
-        self.baths              = aDecoder.decodeObjectForKey("baths") as! String;
-        self.minPrice           = aDecoder.decodeObjectForKey("minPrice") as! String;
-        self.maxPrice           = aDecoder.decodeObjectForKey("maxPrice") as! String;
+        self.isCustomLocation   = aDecoder.decodeBool(forKey: "isCustomLocation") ;
+        self.latitude           = aDecoder.decodeObject(forKey: "latitude") as! String;
+        self.longitude          = aDecoder.decodeObject(forKey:"longitude") as! String;
+        self.radius             = aDecoder.decodeObject(forKey:"radius") as! String;
+        self.locationName       = aDecoder.decodeObject(forKey:"locationName") as! String;
+        self.rooms              = aDecoder.decodeObject(forKey:"rooms") as! String;
+        self.baths              = aDecoder.decodeObject(forKey:"baths") as! String;
+        self.minPrice           = aDecoder.decodeObject(forKey:"minPrice") as! String;
+        self.maxPrice           = aDecoder.decodeObject(forKey:"maxPrice") as! String;
 
-        self.radiusPriority          = aDecoder.decodeObjectForKey("radiusPriority") as! String;
-        self.pricePriority           = aDecoder.decodeObjectForKey("pricePriority") as! String;
-        self.roomsPriority           = aDecoder.decodeObjectForKey("roomsPriority") as! String;
-        self.bathsPriority           = aDecoder.decodeObjectForKey("bathsPriority") as! String;
+        self.radiusPriority     = aDecoder.decodeObject(forKey:"radiusPriority") as! String;
+        self.pricePriority      = aDecoder.decodeObject(forKey:"pricePriority") as! String;
+        self.roomsPriority      = aDecoder.decodeObject(forKey:"roomsPriority") as! String;
+        self.bathsPriority      = aDecoder.decodeObject(forKey:"bathsPriority") as! String;
     }
-    
     
     class func loadSettings()  -> Settings{
         
-        if let  archivedObject = NSUserDefaults.standardUserDefaults().objectForKey("Settings"){
+        if let  archivedObject = UserDefaults.standard.object(forKey: "Settings"){
             
-            let settings  = NSKeyedUnarchiver.unarchiveObjectWithData(archivedObject as! NSData) as! Settings;
+            let settings  = NSKeyedUnarchiver.unarchiveObject(with: (archivedObject as! NSData) as Data) as! Settings;
         
             return settings;
         }
@@ -102,23 +98,19 @@ class Settings: BaseEntity {
         }
     }
     
-    
     func saveSettings(){
         
-        let archivedObject : NSData = NSKeyedArchiver.archivedDataWithRootObject(self)
+        let archivedObject : NSData = NSKeyedArchiver.archivedData(withRootObject: self) as NSData
         
-        NSUserDefaults.standardUserDefaults().setObject(archivedObject, forKey: "Settings");
+        UserDefaults.standard.set(archivedObject, forKey: "Settings");
         
-        NSUserDefaults.standardUserDefaults().synchronize();
+        UserDefaults.standard.synchronize();
     }
-    
-    
     
     func deleteSettings(){
         
-        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "Settings")
+        UserDefaults.standard.set(nil, forKey: "Settings")
 
-        NSUserDefaults.standardUserDefaults().synchronize();
+        UserDefaults.standard.synchronize();
     }
-    
 }

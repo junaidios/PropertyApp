@@ -13,22 +13,21 @@ import MapKit
 
 protocol AutoCompleteTextFieldDelegate{
     func textFieldDidEndEditingWithLocation(location: Location)
-    
 }
 
 class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
     
     var mDelegate : AutoCompleteTextFieldDelegate?
     var tableViewController : UITableViewController?
-    var data = NSMutableArray();
-    
+    var data = [Location]();
+    var currentTime = 0.0;
     var lastStr = "";
     
     //Set this to override the default color of suggestions popover. The default color is [UIColor colorWithWhite:0.8 alpha:0.9]
     @IBInspectable var popoverBackgroundColor : UIColor = UIColor(red: 240.0/255.0, green: 240.0/255.0, blue: 240.0/255.0, alpha: 1.0)
     
     //Set this to override the default frame of the suggestions popover that will contain the suggestions pertaining to the search query. The default frame will be of the same width as textfield, of height 200px and be just below the textfield.
-    @IBInspectable var popoverSize : CGRect?
+    var popoverSize : CGRect?
     
     //Set this to override the default seperator color for tableView in search results. The default color is light gray.
     @IBInspectable var seperatorColor : UIColor = UIColor(white: 0.95, alpha: 1.0)
@@ -55,20 +54,35 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
     override func layoutSubviews(){
         super.layoutSubviews()
         
-        if ( self.text!.characters.count > lastStr.characters.count) && (self.isFirstResponder())
+        if ( self.text!.count > lastStr.count) && (self.isFirstResponder)
         {
             
-            LocationService.loadListOfLocationWhereInput(lastStr, success: { (locations) in
+            currentTime = Date().timeIntervalSince1970;
+            
+            let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(1)
+            
+            let mainQueue = DispatchQueue.main
+            
+            mainQueue.asyncAfter(deadline: deadline) {
+                let executeTime = Date().timeIntervalSince1970;
+                let difference =  executeTime - self.currentTime;
+                print("difference = \(difference)")
+                if difference >= 1 {
                     
-                
-                    self.data = locations as! NSMutableArray;
+                    print("loading search")
                     
-                    self.provideSuggestions()
-                    
-                }, failure: { (error) in
+                    LocationService.loadListOfLocationWhereInput(input: self.lastStr, success: { (locations) in
+                        
+                        self.data = locations as! [Location];
+                        
+                        self.provideSuggestions()
+                        
+                    }, failure: { (error) in
                         
                         print(error?.localizedDescription);
-                })
+                    })
+                }
+            }
                
             
         }
@@ -85,11 +99,12 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
 
     }
     
-    override func resignFirstResponder() -> Bool{
+    override func resignFirstResponder() -> Bool {
         
+
         if let _ = self.tableViewController {
         
-            UIView.animateWithDuration(0.3,
+            UIView.animate(withDuration: 0.3,
                                        animations: ({
                                         self.tableViewController!.tableView.alpha = 0.0
                                        }),
@@ -103,8 +118,8 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
                                         }
             })
         }
-
-        return super.resignFirstResponder()
+        
+        return super.resignFirstResponder();
     }
     
     func provideSuggestions(){
@@ -113,7 +128,7 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
             tableViewController!.tableView.reloadData()
            // self.delegate = self
         }
-        else if self.text?.length > 0{
+        else if self.text!.length > 0{
             //Add a tap gesture recogniser to dismiss the suggestions view when the user taps outside the suggestions view
             
             self.tableViewController = UITableViewController()
@@ -148,7 +163,7 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
             frameForPresentation.size.height = CGFloat(data.count * 30);
             tableViewController!.tableView.frame = frameForPresentation
             
-            UIView.animateWithDuration(0.3,
+            UIView.animate(withDuration: 0.3,
                                        animations: ({
                                         self.tableViewController!.tableView.alpha = 1.0
                                        }),
@@ -162,13 +177,13 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
         
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
         
         let count = data.count
         
         if count == 0{
         
-            UIView.animateWithDuration(0.3,
+            UIView.animate(withDuration: 0.3,
                                        animations: ({
                                         self.tableViewController!.tableView.alpha = 0.0
                                        }),
@@ -183,64 +198,59 @@ class AutoCompleteTextField: UITextField, UITextFieldDelegate, UITableViewDelega
         return count
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 
         return 30;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("MPGResultsCell")
+        var cell = tableView.dequeueReusableCell(withIdentifier: "MPGResultsCell")
         
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "MPGResultsCell")
+            cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "MPGResultsCell")
  
         }
         
-        let location = data[indexPath.row] as! Location;
+        let location = data[indexPath.row];
 
         cell!.textLabel!.text =  location.titleMsg;
-        cell?.textLabel?.font = UIFont.systemFontOfSize(10);
+        cell?.textLabel?.font = UIFont.systemFont(ofSize: 10);
 
         return cell!
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
 
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true);
         
-        let loc = self.data[indexPath.row] as! Location;
+        let loc = self.data[indexPath.row];
         
         self.text = loc.titleMsg;
 
         
-        LocationService.loadDetailOfLocationWherePlaceId(loc.placeId!, success: { (data) -> Void in
+        LocationService.loadDetailOfLocationWherePlaceId(placeId: loc.placeId!, success: { (data) -> Void in
             
-            let locObj = data as! Location;
-            
-            let lat =  Double(locObj.latitude)! as CLLocationDegrees;
-            let lng =  Double(locObj.longitude)! as CLLocationDegrees;
-            
-            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng);
-            
-            self.mDelegate?.textFieldDidEndEditingWithLocation(locObj);
-            
-            self.resignFirstResponder();
-            
-            print(coordinate);
+            if let locObj = data as? Location {
+                
+                let lat =  Double(locObj.latitude) as! CLLocationDegrees;
+                let lng =  Double(locObj.longitude) as! CLLocationDegrees;
+                
+                let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng);
+                
+                self.mDelegate?.textFieldDidEndEditingWithLocation(location: locObj);
+                
+                _ = self.resignFirstResponder();
+                
+                print(coordinate);
+            }
 //
         }) { (error) -> Void in
             
             print(error!.localizedDescription);
             
-            JSAlertView.show((error?.localizedDescription)!);
+            JSAlertView.show(error!.localizedDescription);
             
         }
     }
-    
-    
-    
-    
-    
-    
 }
