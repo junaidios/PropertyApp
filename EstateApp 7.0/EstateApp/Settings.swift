@@ -86,8 +86,8 @@ class Settings: BaseEntity, NSCoding {
             settings.latitude = "00.00";
             settings.longitude = "00.00";
             settings.baths = "2";
-            settings.minPrice = "20000";
-            settings.maxPrice = "800000";
+            settings.minPrice = "20";
+            settings.maxPrice = "800";
             
             settings.pricePriority  = "10";
             settings.radiusPriority = "10";

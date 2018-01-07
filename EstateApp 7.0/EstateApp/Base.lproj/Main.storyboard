@@ -777,7 +777,7 @@
                                     <action selector="btnSavePressed:" destination="ngB-W2-iVm" eventType="touchUpInside" id="CUg-YE-HTN"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Radius" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Szj-VP-iEg" customClass="JSTextField" customModule="EstateApp" customModuleProvider="target">
+                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Radius" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Szj-VP-iEg" customClass="JSPriortyTextField" customModule="EstateApp" customModuleProvider="target">
                                 <rect key="frame" x="233" y="121" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.81568627449999997" green="0.0078431372550000003" blue="0.1058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -785,7 +785,7 @@
                                 <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="15"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Room" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bHr-yv-ZZn" customClass="JSTextField" customModule="EstateApp" customModuleProvider="target">
+                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Room" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bHr-yv-ZZn" customClass="JSPriortyTextField" customModule="EstateApp" customModuleProvider="target">
                                 <rect key="frame" x="233" y="180" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.81568627449999997" green="0.0078431372550000003" blue="0.1058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -793,7 +793,7 @@
                                 <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="15"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Bath" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jHZ-dI-5rq" customClass="JSTextField" customModule="EstateApp" customModuleProvider="target">
+                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Bath" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jHZ-dI-5rq" customClass="JSPriortyTextField" customModule="EstateApp" customModuleProvider="target">
                                 <rect key="frame" x="233" y="239" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.81568627449999997" green="0.0078431372550000003" blue="0.1058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -801,7 +801,7 @@
                                 <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="15"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Price Range" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MF9-Rh-MuN" customClass="JSTextField" customModule="EstateApp" customModuleProvider="target">
+                            <textField opaque="NO" clipsSubviews="YES" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="line" placeholder="Price Range" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MF9-Rh-MuN" customClass="JSPriortyTextField" customModule="EstateApp" customModuleProvider="target">
                                 <rect key="frame" x="233" y="303" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.81568627449999997" green="0.0078431372550000003" blue="0.1058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1010,7 +1010,7 @@
                                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="3" minValue="0.0" maxValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="0Cm-zg-7m2">
                                                 <rect key="frame" x="18" y="779.5" width="86" height="31"/>
                                                 <color key="tintColor" red="1" green="0.92763310190000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="minimumTrackTintColor" red="0.32156862749999998" green="0.69411764710000001" blue="0.88235294119999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="minimumTrackTintColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="maximumTrackTintColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
                                                     <action selector="sliderRoomsChangeValue:" destination="X6e-xk-Vwb" eventType="valueChanged" id="Kuk-Nj-384"/>
@@ -1022,7 +1022,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="aCM-3I-TjA"/>
                                                 </constraints>
-                                                <color key="minimumTrackTintColor" red="0.32156862749999998" green="0.69411764710000001" blue="0.88235294119999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="minimumTrackTintColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="maximumTrackTintColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
                                                     <action selector="sliderBathChangeValue:" destination="X6e-xk-Vwb" eventType="valueChanged" id="sEe-Ma-Ocu"/>
@@ -1031,7 +1031,7 @@
                                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="2" minValue="0.0" maxValue="5" translatesAutoresizingMaskIntoConstraints="NO" id="AAW-NA-e9e">
                                                 <rect key="frame" x="216" y="779.5" width="86" height="31"/>
                                                 <color key="tintColor" red="1" green="0.92763310190000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="minimumTrackTintColor" red="0.32156862749999998" green="0.69411764710000001" blue="0.88235294119999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="minimumTrackTintColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="maximumTrackTintColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
                                                     <action selector="sliderKitchenChangeValue:" destination="X6e-xk-Vwb" eventType="valueChanged" id="v2m-Y3-4vR"/>
@@ -1039,41 +1039,44 @@
                                             </slider>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="XzI-Wi-d5G">
                                                 <rect key="frame" x="213.5" y="929.5" width="86.5" height="85.5"/>
+                                                <color key="backgroundColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="XzI-Wi-d5G" secondAttribute="height" multiplier="89:88" id="JNB-CP-8qx"/>
                                                 </constraints>
                                             </imageView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="d17-Ea-zff">
                                                 <rect key="frame" x="116.5" y="929.5" width="87" height="86"/>
+                                                <color key="backgroundColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="d17-Ea-zff" secondAttribute="height" multiplier="89:88" id="gRU-wH-cY1"/>
                                                 </constraints>
                                             </imageView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8jv-ut-Wtz">
                                                 <rect key="frame" x="20" y="929.5" width="86.5" height="85.5"/>
+                                                <color key="backgroundColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="8jv-ut-Wtz" secondAttribute="height" multiplier="89:88" id="elX-bs-KSV"/>
                                                 </constraints>
                                             </imageView>
                                             <button opaque="NO" tag="100" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHJ-RP-tBV">
-                                                <rect key="frame" x="29.5" y="958" width="68" height="29"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <rect key="frame" x="32.5" y="957.5" width="62" height="30"/>
+                                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="14"/>
                                                 <state key="normal" title="add Image"/>
                                                 <connections>
                                                     <action selector="btnAddImagePressed:" destination="X6e-xk-Vwb" eventType="touchUpInside" id="xDO-fW-l1B"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nkQ-ZS-cKS">
-                                                <rect key="frame" x="126" y="958.5" width="68" height="29"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <rect key="frame" x="129" y="958" width="62" height="30"/>
+                                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="14"/>
                                                 <state key="normal" title="add Image"/>
                                                 <connections>
                                                     <action selector="btnAddImagePressed:" destination="X6e-xk-Vwb" eventType="touchUpInside" id="Jcg-LP-G6j"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="102" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bip-ul-8k5">
-                                                <rect key="frame" x="222.5" y="958" width="68" height="29"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <rect key="frame" x="225.5" y="957.5" width="62" height="30"/>
+                                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="14"/>
                                                 <state key="normal" title="add Image"/>
                                                 <connections>
                                                     <action selector="btnAddImagePressed:" destination="X6e-xk-Vwb" eventType="touchUpInside" id="kjJ-x1-Oel"/>

@@ -66,7 +66,6 @@ class AddPropertyViewController: BaseViewController, UITextFieldDelegate, UIImag
         self.present(alert, animated: true, completion: nil)
     }
     func openCamera(){
-        
         if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)){
 
             picker.sourceType = UIImagePickerControllerSourceType.camera
@@ -111,8 +110,10 @@ class AddPropertyViewController: BaseViewController, UITextFieldDelegate, UIImag
             imgView3.image = image;
         }
     }
+    
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController){
         print("picker cancel.")
+        picker.dismiss(animated: true, completion: nil)
     }
 
     override func viewDidLoad() {
@@ -125,6 +126,10 @@ class AddPropertyViewController: BaseViewController, UITextFieldDelegate, UIImag
         mapView.cornerRadius(5.0);
         tfDescription.placeholder = "Description";
         tfSpecialNote.placeholder = "Notes";
+        
+        imgView1.cornerRadius(4.0);
+        imgView2.cornerRadius(4.0);
+        imgView3.cornerRadius(4.0);
         // Do any additional setup after loading the view.
     }
 

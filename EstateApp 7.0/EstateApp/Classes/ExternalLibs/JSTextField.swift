@@ -10,7 +10,7 @@
 import UIKit
 
 class JSTextField: UITextField, UITextFieldDelegate {
-
+    
     
     func colorUpdate() {
         
@@ -28,7 +28,7 @@ class JSTextField: UITextField, UITextFieldDelegate {
                 self.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
             }
         }
-
+        
     }
     
     private var optionTextLabel: UILabel?
@@ -155,10 +155,50 @@ class JSTextField: UITextField, UITextFieldDelegate {
         super.layoutSubviews();
         
         if tag != 101 {
-
+            
             self.textFieldPlaceholderUpdate();
         }
     }
+}
 
+class JSPriortyTextField: UITextField, UITextFieldDelegate {
+
+    func colorUpdate() {
+        
+        if self.tag == 101 { // Types
+            
+            self.backgroundColor = UIColor.red;
+            
+            let row = 10 - Int(self.text!)!
+            
+            if row > 3 && row <= 7 {
+                self.backgroundColor = UIColor.orange;
+            }
+            if row > 7 && row <= 10 {
+                
+                self.backgroundColor = UIColor.init(red: 0.36, green: 0.64, blue: 0.35, alpha: 1.0);
+            }
+        }
+        
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder);
+        
+        if self.tag == 101 { // Types
+            
+            self.round();
+            self.borderUIColor(color: UIColor.black)
+            
+            var list: [String] = [];
+            
+            for i in 0...10 {
+                
+                list.append("\(10-i)");
+            }
+            
+            self.inputView = KeyboardListView.loadWithNib(self, options: list, color: true);
+            
+        }
+    }
 }
