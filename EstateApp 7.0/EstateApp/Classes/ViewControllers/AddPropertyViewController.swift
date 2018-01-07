@@ -11,10 +11,8 @@ import MapKit
 import GooglePlaces
 
 class AddPropertyViewController: BaseViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, JSMapViewDelegate {
-    
 
     var imageNumber = 100;
-
     var latLong = CLLocationCoordinate2DMake(0, 0);
     
     @IBOutlet weak var lblRooms: UILabel!
@@ -95,7 +93,8 @@ class AddPropertyViewController: BaseViewController, UITextFieldDelegate, UIImag
     
     //MARK:UIImagePickerControllerDelegate
     
-    private func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
         picker .dismiss(animated: true, completion: nil)
         
         let imgTemp = info[UIImagePickerControllerEditedImage] as? UIImage

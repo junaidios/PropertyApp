@@ -1037,21 +1037,21 @@
                                                     <action selector="sliderKitchenChangeValue:" destination="X6e-xk-Vwb" eventType="valueChanged" id="v2m-Y3-4vR"/>
                                                 </connections>
                                             </slider>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="XzI-Wi-d5G">
+                                            <imageView userInteractionEnabled="NO" tag="102" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="XzI-Wi-d5G">
                                                 <rect key="frame" x="213.5" y="929.5" width="86.5" height="85.5"/>
                                                 <color key="backgroundColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="XzI-Wi-d5G" secondAttribute="height" multiplier="89:88" id="JNB-CP-8qx"/>
                                                 </constraints>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="d17-Ea-zff">
+                                            <imageView userInteractionEnabled="NO" tag="101" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="d17-Ea-zff">
                                                 <rect key="frame" x="116.5" y="929.5" width="87" height="86"/>
                                                 <color key="backgroundColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="d17-Ea-zff" secondAttribute="height" multiplier="89:88" id="gRU-wH-cY1"/>
                                                 </constraints>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8jv-ut-Wtz">
+                                            <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8jv-ut-Wtz">
                                                 <rect key="frame" x="20" y="929.5" width="86.5" height="85.5"/>
                                                 <color key="backgroundColor" red="0.2666666667" green="0.58431372550000005" blue="0.20392156859999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
