@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'A9AE605468A3B3BA562177897410E2DA'
-               BlueprintName = 'WARangeSlider'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'WARangeSlider.framework'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DD2C7EBD863BB20DD550134E857CE186"
+               BlueprintName = "WARangeSlider"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "WARangeSlider.framework">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

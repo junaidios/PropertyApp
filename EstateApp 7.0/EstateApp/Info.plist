@@ -31,10 +31,18 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Location needed to load the data nearby</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Location</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>PtotoLib</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
